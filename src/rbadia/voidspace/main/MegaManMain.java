@@ -35,7 +35,7 @@ public class MegaManMain {
 
 		MainFrame frame = new MainFrame();              		// Main Game Window
 		GameStatus gameStatus = new GameStatus();       		// Records overall status of game across all levels
-		LevelLogic gameLogic = new LevelLogic();        		// Coordinates among various levels
+		NewLevelLogic gameLogic = new NewLevelLogic();        		// Coordinates among various levels
 		InputHandler inputHandler = new InputHandler(); 		// Keyboard listener
 		GraphicsManager graphicsMan = new GraphicsManager(); // Draws all graphics for game objects
 		SoundManager soundMan = new SoundManager();			// Loads and plays all sounds during the game
@@ -49,15 +49,16 @@ public class MegaManMain {
 		
 		frame.addKeyListener(inputHandler);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		gameStatus.setAsteroidsDestroyed(0);
-		gameStatus.setLivesLeft(3);
-
+		
 		int playAgain = 2;
-		while(playAgain != 1) {
-
-			LevelState level1State = new Level1State(1, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
-			LevelState level2State = new Level2State(2, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
-			LevelState levels[] = { level1State, level2State };
+		while(playAgain != 1) {	
+			
+			gameStatus.setAsteroidsDestroyed(0);
+			gameStatus.setLivesLeft(3);
+			LevelState newlevel1State = new NewLevel1State(1, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
+			LevelState newlevel2State = new NewLevel2State(2, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
+			LevelState level3State = new Level3State(3, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
+			LevelState levels[] = { newlevel1State, newlevel2State, level3State };
 
 			String outcome = "CONGRATS!! YOU WON!!";
 			for (LevelState nextLevel : levels) {
@@ -105,3 +106,5 @@ public class MegaManMain {
 		}
 	}
 }
+
+
