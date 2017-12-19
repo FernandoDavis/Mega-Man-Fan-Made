@@ -15,4 +15,14 @@ public class NewLevel2State extends Level2State {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 		// TODO Auto-generated constructor stub
 	}
+	
+	@Override
+	public boolean isLevelWon() {
+		if(getInputHandler().isNPressed()) {
+			return true;
+		}
+		return levelAsteroidsDestroyed >= 3;
+	}
+	
+	
 }
