@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 
 import rbadia.voidspace.graphics.GraphicsManager;
 import rbadia.voidspace.graphics.NewGraphicsManager;
+import rbadia.voidspace.model.BigBullet;
+import rbadia.voidspace.model.Bullet;
 import rbadia.voidspace.sounds.SoundManager;
 
 public class NewLevel2State extends Level2State {
@@ -14,7 +16,7 @@ public class NewLevel2State extends Level2State {
 	private static final long serialVersionUID = 1195331220121706608L;
 
 	public NewLevel2State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
-			InputHandler inputHandler, GraphicsManager graphicsMan, SoundManager soundMan) {
+			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 		// TODO Auto-generated constructor stub
 	}
@@ -25,7 +27,7 @@ public class NewLevel2State extends Level2State {
 			return true;
 		}
 		return levelAsteroidsDestroyed >= 3;
-	}
+	};
 	
 	@Override
 	protected void drawMegaMan() {
@@ -33,29 +35,96 @@ public class NewLevel2State extends Level2State {
 		Graphics2D g2d = getGraphics2D();
 		GameStatus status = getGameStatus();
 		if(!status.isNewMegaMan()){
-			if((Gravity() == true) || ((Gravity() == true) && (Fire() == true || Fire2() == true)) && !getInputHandler().isLeftPressed()){
+			if(((Gravity() == true) || ((Gravity() == true) && (Fire() == true || Fire2() == true))) && megaMan.getDirection() != 180){
 				getGraphicsManager().drawMegaFallR(megaMan, g2d, this);
 			}
 			
-			else if((Gravity() == true) || ((Gravity() == true) && (Fire() == true || Fire2() == true)) && getInputHandler().isLeftPressed()){
+			else if(((Gravity() == true) || ((Gravity() == true) && (Fire() == true || Fire2() == true))) && megaMan.getDirection() == 180){
 				((NewGraphicsManager) getGraphicsManager()).drawMegaFallRFlipped(megaMan, g2d, this);
 			}
 		}
 
-		if((Fire() == true || Fire2()== true) && (Gravity()==false) && !getInputHandler().isLeftPressed()){
+		if(((Fire() == true || Fire2()== true) && (Gravity()==false)) && megaMan.getDirection() != 180){
 			getGraphicsManager().drawMegaFireR(megaMan, g2d, this);
 		}
 		
-		else if((Fire() == true || Fire2()== true) && (Gravity()==false) && getInputHandler().isLeftPressed()){
+		else if(((Fire() == true || Fire2()== true) && (Gravity()==false)) && megaMan.getDirection() == 180){
 			((NewGraphicsManager) getGraphicsManager()).drawMegaFireRFlipped(megaMan, g2d, this);
 		}
 
-		if((Gravity()==false) && (Fire()==false) && (Fire2()==false) && !getInputHandler().isLeftPressed()){
+		if((Gravity()==false) && (Fire()==false) && (Fire2()==false) && megaMan.getDirection() != 180){
 			getGraphicsManager().drawMegaMan(megaMan, g2d, this);
 		}
 		
-		else if((Gravity()==false) && (Fire()==false) && (Fire2()==false) && getInputHandler().isLeftPressed()){
+		else if(((Gravity()==false) && (Fire()==false) && (Fire2()==false)) && megaMan.getDirection() == 180){
 			((NewGraphicsManager) getGraphicsManager()).drawMegaManFlipped(megaMan, g2d, this);
 		}
-	}
+	};
+	
+	@Override
+	public boolean moveBullet(Bullet bullet){
+		if(bullet.getX() + bullet.getSpeed() > 0 && bullet.getDirection() == 180){
+			bullet.translate(-bullet.getSpeed(), 0);
+			return false;
+		}
+		else if(bullet.getX() + bullet.getSpeed() + bullet.getWidth() < getWidth() && bullet.getDirection() == 0){
+			bullet.translate(bullet.getSpeed(), 0);
+			return false;
+		}
+		else{
+			return true;
+		}
+	};
+	
+	@Override
+	public boolean moveBigBullet(BigBullet bigBullet){
+		if(bigBullet.getX() + bigBullet.getSpeed() > 0 && bigBullet.getDirection() == 180){
+			bigBullet.translate(-bigBullet.getSpeed(), 0);
+			return false;
+		}
+		else if(bigBullet.getX() + bigBullet.getSpeed() + bigBullet.getWidth() < getWidth() && bigBullet.getDirection() == 0){
+			bigBullet.translate(bigBullet.getSpeed(), 0);
+			return false;
+		}
+		else{
+			return true;
+		}
+	};
+
+	
+	@Override
+	public void fireBullet(){
+		Bullet bullet = new Bullet(megaMan.x + megaMan.width - Bullet.WIDTH/2,
+				megaMan.y + megaMan.width/2 - Bullet.HEIGHT +2);
+		bullet.setDirection(megaMan.getDirection());
+		bullets.add(bullet);
+		this.getSoundManager().playBulletSound();
+	};
+	
+	@Override
+	public void fireBigBullet(){
+		//BigBullet bigBullet = new BigBullet(megaMan);
+		int xPos = megaMan.x + megaMan.width - BigBullet.WIDTH / 2;
+		int yPos = megaMan.y + megaMan.width/2 - BigBullet.HEIGHT + 4;
+		BigBullet  bigBullet = new BigBullet(xPos, yPos);
+		bigBullet.setDirection(megaMan.getDirection());
+		bigBullets.add(bigBullet);
+		this.getSoundManager().playBulletSound();
+	};
+	
+	@Override
+	public void moveMegaManLeft(){
+		if(megaMan.getX() - megaMan.getSpeed() >= 0){
+			megaMan.translate(-megaMan.getSpeed(), 0);
+			megaMan.setDirection(180);
+		}
+	};
+	
+	@Override
+	public void moveMegaManRight(){
+		if(megaMan.getX() + megaMan.getSpeed() + megaMan.width < getWidth()){
+			megaMan.translate(megaMan.getSpeed(), 0);
+			megaMan.setDirection(0);
+		}
+	};
 }

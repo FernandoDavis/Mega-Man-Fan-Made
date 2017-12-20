@@ -2,6 +2,7 @@ package rbadia.voidspace.main;
 import java.awt.Graphics2D;
 
 import rbadia.voidspace.graphics.GraphicsManager;
+import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.main.GameStatus;
 import rbadia.voidspace.main.InputHandler;
 import rbadia.voidspace.main.MainFrame;
@@ -15,7 +16,7 @@ public class Level3State extends NewLevel2State{
 	private static final long serialVersionUID = 1L;
 
 	public Level3State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
-			InputHandler inputHandler, GraphicsManager graphicsMan, SoundManager soundMan) {
+			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 		// TODO Auto-generated constructor stub
 	}
@@ -33,7 +34,7 @@ public class Level3State extends NewLevel2State{
 		setCurrentState(getStartState());
 		newPlatforms(getNumPlatforms());
 
-	}
+	};
 
 	@Override
 	protected void drawAsteroid() {
@@ -54,7 +55,7 @@ public class Level3State extends NewLevel2State{
 				getGraphicsManager().drawAsteroidExplosion(asteroidExplosion, g2d, this);
 			}
 		}	
-	}
+	};
 
 	@Override
 	public Platform[] newPlatforms(int n){
@@ -67,12 +68,15 @@ public class Level3State extends NewLevel2State{
 				platforms[i].setLocation(this.getWidth()-100-j*50, getHeight()/2 + 160 - j*40);
 				j++;
 			}
-			
-			
-			
-
-		}
-		
+		}	
 		return platforms;
-	}
+	};
+	
+	@Override
+	public boolean isLevelWon() {
+		if(getInputHandler().isNPressed()) {
+			return true;
+		}
+		return levelAsteroidsDestroyed >= 8; //+5 asteroids
+	};
 }
