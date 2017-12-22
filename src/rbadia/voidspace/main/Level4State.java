@@ -1,6 +1,14 @@
 package rbadia.voidspace.main;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.util.ArrayList;
+
 import rbadia.voidspace.graphics.NewGraphicsManager;
+import rbadia.voidspace.model.BigBullet;
+import rbadia.voidspace.model.Bullet;
+import rbadia.voidspace.model.Ship;
 import rbadia.voidspace.sounds.SoundManager;
 
 public class Level4State extends Level3State {
@@ -16,5 +24,124 @@ public class Level4State extends Level3State {
 		// TODO Auto-generated constructor stub
 	}
 	
+	protected Ship bossShip;
+	protected int levelBossShipHits = 0;
+	protected Rectangle shipExplosion;
+	
+	public Ship getShip() {
+		return bossShip;
+	}
+
+	@Override
+	public boolean isLevelWon() {
+		if(getInputHandler().isNPressed()) {
+			return true;
+		}
+		return levelBossShipHits >= 5 && levelAsteroidsDestroyed >= 3;
+	};
+	
+	@Override
+	public void doStart() {	
+
+		setStartState(START_STATE);
+		setCurrentState(getStartState());
+		// init game variables
+		bullets = new ArrayList<Bullet>();
+		bigBullets = new ArrayList<BigBullet>();
+		//numPlatforms = new Platform[5];
+
+		GameStatus status = this.getGameStatus();
+
+		status.setGameOver(false);
+		status.setNewAsteroid(false);
+
+		// init the life and the asteroid
+		newMegaMan();
+		newShip();
+		newFloor(this, 9);
+		newPlatforms(getNumPlatforms());
+		newAsteroid(this);
+
+		lastAsteroidTime = -NEW_ASTEROID_DELAY;
+		lastLifeTime = -NEW_MEGAMAN_DELAY;
+
+		bigFont = originalFont;
+		biggestFont = null;
+
+		// Display initial values for scores
+		getMainFrame().getDestroyedValueLabel().setForeground(Color.BLACK);
+		getMainFrame().getLivesValueLabel().setText(Integer.toString(status.getLivesLeft()));
+		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
+		getMainFrame().getLevelValueLabel().setText(Long.toString(status.getLevel()));
+
+	}
+	
+	@Override
+	public void updateScreen(){
+		Graphics2D g2d = getGraphics2D();
+		GameStatus status = this.getGameStatus();
+
+		// save original font - for later use
+		if(this.originalFont == null){
+			this.originalFont = g2d.getFont();
+			this.bigFont = originalFont;
+		}
+
+		clearScreen();
+		drawStars(50);
+		drawFloor();
+		drawPlatforms();
+		drawMegaMan();
+		drawNewBossShip();
+		drawAsteroid();
+		drawBullets();
+		drawBigBullets();
+		checkBullletAsteroidCollisions();
+		checkBullletShipCollisions();
+		checkBigBulletAsteroidCollisions();
+		checkMegaManAsteroidCollisions();
+		checkAsteroidFloorCollisions();
+
+		// update asteroids destroyed (score) label  
+		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
+		// update lives left label
+		getMainFrame().getLivesValueLabel().setText(Integer.toString(status.getLivesLeft()));
+		//update level label
+		getMainFrame().getLevelValueLabel().setText(Long.toString(status.getLevel()));
+	}
+	
+	public Ship newShip(){
+		this.bossShip = new Ship((getWidth() - Ship.WIDTH) / 2, (getHeight() - Ship.HEIGHT - Ship.Y_OFFSET) / 2);
+		return bossShip;
+	}
+	
+	protected void drawNewBossShip() {
+		Graphics2D g2d = getGraphics2D();
+		((NewGraphicsManager) getGraphicsManager()).drawShip(bossShip, g2d, this);	
+	}
+	
+	protected void checkBullletShipCollisions() {
+		for(int i=0; i<bullets.size(); i++){
+			Bullet bullet = bullets.get(i);
+			if(bossShip.intersects(bullet)){
+				levelBossShipHits++;
+				bullets.remove(i);
+				if(levelBossShipHits>=5) {
+					removeShip(bossShip);
+				}
+				break;
+			}
+		}
+	}
+	
+	public void removeShip(Ship ship){
+		shipExplosion = new Rectangle(
+				ship.x,
+				ship.y,
+				ship.getPixelsWide(),
+				ship.getPixelsTall());
+		ship.setLocation(-ship.getPixelsWide(), -ship.getPixelsTall());
+		this.getSoundManager().playShipExplosionSound();
+	}
 	
 }
