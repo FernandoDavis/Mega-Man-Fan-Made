@@ -14,7 +14,7 @@ import rbadia.voidspace.sounds.SoundManager;
 public class Level4State extends NewLevel2State{
 
 	private static final long serialVersionUID = 1L;
-	protected int numPlatforms = 5;
+	protected int numPlatforms = 10;
 
 	public Level4State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
 			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
@@ -70,11 +70,18 @@ public class Level4State extends NewLevel2State{
 		int j = 0;
 		for(int i=0; i<n; i++){
 			this.platforms[i] = new Platform(0,0);
-			if(i<8) platforms[i].setLocation(50+ i*50, getHeight()/2 + 160 - i*40);
-			if(i>=8) {
-				platforms[i].setLocation(this.getWidth()-100-j*50, getHeight()/2 + 160 - j*40);
-				j++;
-			}
+			if(i<3) platforms[i].setLocation(0 , getHeight()/2 + 40 - i*40);
+//			if(i==3)platforms[i].setLocation(50+ i*50, getHeight()/2 + 140 - i*40);
+//			if(i==4) platforms[i].setLocation(50 +i*50, getHeight()/2 + 140 - 3*40);
+//			if(i>4){	
+//				int k=4;
+//				platforms[i].setLocation(50 + i*50, getHeight()/2 + 20 + (i-k)*40 );
+//				k=k+2;
+//			}
+//			if(i == 6) {
+//				platforms[i].setLocation(this.getWidth()-100-j*50, getHeight()/2 + 160 - j*40);
+//				j++;
+//			}
 		}	
 		return platforms;
 	}

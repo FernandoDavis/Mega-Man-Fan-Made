@@ -3,6 +3,7 @@ package rbadia.voidspace.main;
 import java.awt.Graphics2D;
 import java.util.List;
 
+import rbadia.voidspace.graphics.GraphicsManager;
 import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.model.BigBullet;
 import rbadia.voidspace.model.Bullet;
@@ -16,8 +17,8 @@ public class NewLevel1State extends Level1State {
 	 */
 	private static final long serialVersionUID = -4781697848857966373L;
 
-	public NewLevel1State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
-			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
+	public NewLevel1State(int level, MainFrame frame, GameStatus status, LevelLogic gameLogic,
+			InputHandler inputHandler, GraphicsManager graphicsMan, SoundManager soundMan) {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 		// TODO Auto-generated constructor stub
 	}
@@ -101,8 +102,8 @@ public class NewLevel1State extends Level1State {
 		List<Bullet> bullets = this.getBullets();
 		for(int i=0; i<bullets.size(); i++){
 			Bullet bullet = bullets.get(i);
-			if((bullet.getX() >= megaMan.getX() - megaMan.getWidth() - 60) && 
-					(bullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60)){
+			if((bullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60) && 
+					(bullet.getX() >= megaMan.getX() - 60)){
 				return true;
 			}
 		}
@@ -112,12 +113,20 @@ public class NewLevel1State extends Level1State {
 	
 	@Override
 	public void fireBullet(){
+		if(megaMan.getDirection()==180) 
+		{
+			Bullet bullet2 = new Bullet (megaMan.x,megaMan.y + megaMan.width/2 - Bullet.HEIGHT+2);
+			bullet2.setDirection(megaMan.getDirection());
+			bullets.add(bullet2);
+		}
+		else {
 		Bullet bullet = new Bullet(megaMan.x + megaMan.width - Bullet.WIDTH/2,
-				megaMan.y + megaMan.width/2 - Bullet.HEIGHT +2);
+					   megaMan.y + megaMan.width/2 - Bullet.HEIGHT +2);
 		bullet.setDirection(megaMan.getDirection());
 		bullets.add(bullet);
 		this.getSoundManager().playBulletSound();
-	};
+	}
+	}
 	
 	@Override
 	public void fireBigBullet(){

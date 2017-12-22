@@ -1,5 +1,8 @@
 package rbadia.voidspace.main;
+import java.awt.Color;
 import java.awt.Graphics2D;
+
+import javax.swing.ImageIcon;
 
 import rbadia.voidspace.graphics.GraphicsManager;
 import rbadia.voidspace.graphics.NewGraphicsManager;
@@ -8,13 +11,16 @@ import rbadia.voidspace.main.InputHandler;
 import rbadia.voidspace.main.MainFrame;
 import rbadia.voidspace.main.NewLevel2State;
 import rbadia.voidspace.main.NewLevelLogic;
+import rbadia.voidspace.model.Asteroid;
 import rbadia.voidspace.model.Platform;
 import rbadia.voidspace.sounds.SoundManager;
 
 public class Level3State extends NewLevel2State{
 
 	private static final long serialVersionUID = 1L;
+	ImageIcon Img = new ImageIcon(getClass().getResource("/rbadia/voidspace/graphics/Transition.png"));
 	protected int numPlatforms = 16;
+	
 
 	public Level3State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
 			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
@@ -31,28 +37,31 @@ public class Level3State extends NewLevel2State{
 		setStartState(GETTING_READY);
 		setCurrentState(getStartState());
 		newPlatforms(getNumPlatforms());
-
 	}
-
+	
 	@Override
 	protected void drawAsteroid() {
 		Graphics2D g2d = getGraphics2D();
-		if((asteroid.getX() + asteroid.getPixelsWide() >  0)) {
-			asteroid.translate(-asteroid.getSpeed(), asteroid.getSpeed()/2);
+		GameStatus status = getGameStatus();
+		if((asteroid.getY() + asteroid.getPixelsTall() >  0)){
+			asteroid.translate(rand.nextInt(asteroid.getSpeed()),rand.nextInt(getWidth()));
 			getGraphicsManager().drawAsteroid(asteroid, g2d, this);	
 		}
 		else {
 			long currentTime = System.currentTimeMillis();
 			if((currentTime - lastAsteroidTime) > NEW_ASTEROID_DELAY){
-
-				asteroid.setLocation(this.getWidth() - asteroid.getPixelsWide(),
-						rand.nextInt(this.getHeight() - asteroid.getPixelsTall() - 32));
+				// draw a new asteroid
+				lastAsteroidTime = currentTime;
+				status.setNewAsteroid(false);
+				asteroid.setLocation((int) (this.getWidth() - asteroid.getPixelsWide()),
+						(rand.nextInt((int) (this.getHeight() - asteroid.getPixelsTall() - 32))));
 			}
-			else {
+
+			else{
 				// draw explosion
 				getGraphicsManager().drawAsteroidExplosion(asteroidExplosion, g2d, this);
 			}
-		}	
+		}
 	}
 	
 	@Override
@@ -77,6 +86,13 @@ public class Level3State extends NewLevel2State{
 			}
 		}	
 		return platforms;
+	}
+	
+	@Override
+	protected void clearScreen() {
+		// clear screen
+		Graphics2D g2d = getGraphics2D();
+		g2d.drawImage(this.Img.getImage(), 0, 0,getWidth(), getHeight(), null);
 	}
 	
 	@Override

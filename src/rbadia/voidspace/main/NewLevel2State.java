@@ -1,11 +1,13 @@
 package rbadia.voidspace.main;
 
 import java.awt.Graphics2D;
+import java.util.List;
 
 import rbadia.voidspace.graphics.GraphicsManager;
 import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.model.BigBullet;
 import rbadia.voidspace.model.Bullet;
+import rbadia.voidspace.model.MegaMan;
 import rbadia.voidspace.sounds.SoundManager;
 
 public class NewLevel2State extends Level2State {
@@ -54,15 +56,18 @@ public class NewLevel2State extends Level2State {
 
 		if((Gravity()==false) && (Fire()==false) && (Fire2()==false) && megaMan.getDirection() != 180){
 			getGraphicsManager().drawMegaMan(megaMan, g2d, this);
+			megaMan.setDirection(0);
 		}
 		
 		else if(((Gravity()==false) && (Fire()==false) && (Fire2()==false)) && megaMan.getDirection() == 180){
 			((NewGraphicsManager) getGraphicsManager()).drawMegaManFlipped(megaMan, g2d, this);
+			megaMan.setDirection(180);
 		}
 	};
 	
 	@Override
 	public boolean moveBullet(Bullet bullet){
+		
 		if(bullet.getX() + bullet.getSpeed() > 0 && bullet.getDirection() == 180){
 			bullet.translate(-bullet.getSpeed(), 0);
 			return false;
@@ -90,16 +95,38 @@ public class NewLevel2State extends Level2State {
 			return true;
 		}
 	};
+	
+	@Override
+	protected boolean Fire(){
+		MegaMan megaMan = this.getMegaMan();
+		List<Bullet> bullets = this.getBullets();
+		for(int i=0; i<bullets.size(); i++){
+			Bullet bullet = bullets.get(i);
+			if((bullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60) && 
+					(bullet.getX() >= megaMan.getX() - 60)){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	
 	@Override
 	public void fireBullet(){
+		if(megaMan.getDirection()==180) 
+		{
+			Bullet bullet2 = new Bullet (megaMan.x,megaMan.y + megaMan.width/2 - Bullet.HEIGHT+2);
+			bullet2.setDirection(megaMan.getDirection());
+			bullets.add(bullet2);
+		}
+		else {
 		Bullet bullet = new Bullet(megaMan.x + megaMan.width - Bullet.WIDTH/2,
-				megaMan.y + megaMan.width/2 - Bullet.HEIGHT +2);
+					   megaMan.y + megaMan.width/2 - Bullet.HEIGHT +2);
 		bullet.setDirection(megaMan.getDirection());
 		bullets.add(bullet);
 		this.getSoundManager().playBulletSound();
-	};
+	}
+	}
 	
 	@Override
 	public void fireBigBullet(){
