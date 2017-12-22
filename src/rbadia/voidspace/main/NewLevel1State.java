@@ -55,15 +55,18 @@ public class NewLevel1State extends Level1State {
 
 		if((Gravity()==false) && (Fire()==false) && (Fire2()==false) && megaMan.getDirection() != 180){
 			getGraphicsManager().drawMegaMan(megaMan, g2d, this);
+			megaMan.setDirection(0);
 		}
 		
 		else if(((Gravity()==false) && (Fire()==false) && (Fire2()==false)) && megaMan.getDirection() == 180){
 			((NewGraphicsManager) getGraphicsManager()).drawMegaManFlipped(megaMan, g2d, this);
+			megaMan.setDirection(180);
 		}
 	};
 	
 	@Override
 	public boolean moveBullet(Bullet bullet){
+		
 		if(bullet.getX() + bullet.getSpeed() > 0 && bullet.getDirection() == 180){
 			bullet.translate(-bullet.getSpeed(), 0);
 			return false;
@@ -91,6 +94,20 @@ public class NewLevel1State extends Level1State {
 			return true;
 		}
 	};
+	
+	@Override
+	protected boolean Fire(){
+		MegaMan megaMan = this.getMegaMan();
+		List<Bullet> bullets = this.getBullets();
+		for(int i=0; i<bullets.size(); i++){
+			Bullet bullet = bullets.get(i);
+			if((bullet.getX() >= megaMan.getX() - megaMan.getWidth() - 60) && 
+					(bullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60)){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	
 	@Override

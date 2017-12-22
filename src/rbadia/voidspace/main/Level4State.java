@@ -11,12 +11,12 @@ import rbadia.voidspace.main.NewLevelLogic;
 import rbadia.voidspace.model.Platform;
 import rbadia.voidspace.sounds.SoundManager;
 
-public class Level3State extends NewLevel2State{
+public class Level4State extends NewLevel2State{
 
 	private static final long serialVersionUID = 1L;
-	protected int numPlatforms = 16;
+	protected int numPlatforms = 5;
 
-	public Level3State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
+	public Level4State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
 			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 		// TODO Auto-generated constructor stub
@@ -54,7 +54,7 @@ public class Level3State extends NewLevel2State{
 			}
 		}	
 	}
-	
+
 	@Override
 	protected void drawPlatforms() {
 		//draw platforms
@@ -63,7 +63,7 @@ public class Level3State extends NewLevel2State{
 			getGraphicsManager().drawPlatform2(platforms[i], g2d, this, i);
 		}
 	}
-
+	
 	@Override
 	public Platform[] newPlatforms(int n){
 		platforms = new Platform[n];
