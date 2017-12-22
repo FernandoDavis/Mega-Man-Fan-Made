@@ -23,7 +23,6 @@ public class Level3State extends NewLevel2State{
 
 	
 	protected int numPlatforms=16;
-	
 	public int getNumPlatforms() {return numPlatforms;}
 	
 
@@ -33,7 +32,6 @@ public class Level3State extends NewLevel2State{
 		setStartState(GETTING_READY);
 		setCurrentState(getStartState());
 		newPlatforms(getNumPlatforms());
-
 	};
 
 	@Override
@@ -46,7 +44,6 @@ public class Level3State extends NewLevel2State{
 		else {
 			long currentTime = System.currentTimeMillis();
 			if((currentTime - lastAsteroidTime) > NEW_ASTEROID_DELAY){
-
 				asteroid.setLocation(this.getWidth() - asteroid.getPixelsWide(),
 						rand.nextInt(this.getHeight() - asteroid.getPixelsTall() - 32));
 			}

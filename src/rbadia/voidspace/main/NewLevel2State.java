@@ -1,11 +1,13 @@
 package rbadia.voidspace.main;
 
 import java.awt.Graphics2D;
+import java.util.List;
 
 import rbadia.voidspace.graphics.GraphicsManager;
 import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.model.BigBullet;
 import rbadia.voidspace.model.Bullet;
+import rbadia.voidspace.model.MegaMan;
 import rbadia.voidspace.sounds.SoundManager;
 
 public class NewLevel2State extends Level2State {
@@ -110,6 +112,44 @@ public class NewLevel2State extends Level2State {
 		bigBullet.setDirection(megaMan.getDirection());
 		bigBullets.add(bigBullet);
 		this.getSoundManager().playBulletSound();
+	};
+	
+	@Override
+	protected boolean Fire(){
+		MegaMan megaMan = this.getMegaMan();
+		List<Bullet> bullets = this.getBullets();
+		for(int i=0; i<bullets.size(); i++){
+			Bullet bullet = bullets.get(i);
+			if((bullet.getX() > megaMan.getX() + megaMan.getWidth()) && 
+					(bullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60)){
+				return true;
+			}
+			
+			else if((bullet.getX() > megaMan.getX()) && 
+					(bullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60)){
+				return true;
+			}
+		}
+		return false;
+	};
+	
+	@Override
+	protected boolean Fire2(){
+		MegaMan megaMan = this.getMegaMan();
+		List<BigBullet> bigBullets = this.getBigBullets();
+		for(int i=0; i<bigBullets.size(); i++){
+			BigBullet bigBullet = bigBullets.get(i);
+			if((bigBullet.getX() > megaMan.getX() + megaMan.getWidth()) && 
+					(bigBullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60)){
+				return true;
+			}
+			
+			if((bigBullet.getX() > megaMan.getX()) && 
+					(bigBullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60)){
+				return true;
+			}
+		}
+		return false;
 	};
 	
 	@Override

@@ -114,6 +114,44 @@ public class NewLevel1State extends Level1State {
 	};
 	
 	@Override
+	protected boolean Fire(){
+		MegaMan megaMan = this.getMegaMan();
+		List<Bullet> bullets = this.getBullets();
+		for(int i=0; i<bullets.size(); i++){
+			Bullet bullet = bullets.get(i);
+			if((bullet.getX() > megaMan.getX() + megaMan.getWidth()) && 
+					(bullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60)){
+				return true;
+			}
+			
+			else if((bullet.getX() > megaMan.getX()) && 
+					(bullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60)){
+				return true;
+			}
+		}
+		return false;
+	};
+	
+	@Override
+	protected boolean Fire2(){
+		MegaMan megaMan = this.getMegaMan();
+		List<BigBullet> bigBullets = this.getBigBullets();
+		for(int i=0; i<bigBullets.size(); i++){
+			BigBullet bigBullet = bigBullets.get(i);
+			if((bigBullet.getX() > megaMan.getX() + megaMan.getWidth()) && 
+					(bigBullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60)){
+				return true;
+			}
+			
+			if((bigBullet.getX() > megaMan.getX()) && 
+					(bigBullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60)){
+				return true;
+			}
+		}
+		return false;
+	};
+	
+	@Override
 	public void moveMegaManLeft(){
 		if(megaMan.getX() - megaMan.getSpeed() >= 0){
 			megaMan.translate(-megaMan.getSpeed(), 0);
