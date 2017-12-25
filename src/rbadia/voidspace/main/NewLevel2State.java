@@ -153,5 +153,10 @@ public class NewLevel2State extends Level2State {
 			megaMan.translate(megaMan.getSpeed(), 0);
 			megaMan.setDirection(0);
 		}
+	}
+
+	protected void drawAsteroid2() {
+		// TODO Auto-generated method stub
+		
 	};
 }

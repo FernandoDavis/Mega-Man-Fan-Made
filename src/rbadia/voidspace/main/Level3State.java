@@ -18,7 +18,8 @@ import rbadia.voidspace.sounds.SoundManager;
 public class Level3State extends NewLevel2State{
 
 	private static final long serialVersionUID = 1L;
-	ImageIcon Img = new ImageIcon(getClass().getResource("/rbadia/voidspace/graphics/Transition.png"));
+	
+	ImageIcon Img = new ImageIcon(getClass().getResource("/rbadia/voidspace/graphics/LagoView.jpg"));
 	protected int numPlatforms = 16;
 	
 
@@ -43,8 +44,8 @@ public class Level3State extends NewLevel2State{
 	protected void drawAsteroid() {
 		Graphics2D g2d = getGraphics2D();
 		GameStatus status = getGameStatus();
-		if((asteroid.getY() + asteroid.getPixelsTall() >  0)){
-			asteroid.translate(rand.nextInt(asteroid.getSpeed()),rand.nextInt(getWidth()));
+		if((asteroid.getX() + asteroid.getWidth() >  0)){
+			asteroid.translate(-asteroid.getSpeed(), 0);
 			getGraphicsManager().drawAsteroid(asteroid, g2d, this);	
 		}
 		else {
@@ -92,8 +93,11 @@ public class Level3State extends NewLevel2State{
 	protected void clearScreen() {
 		// clear screen
 		Graphics2D g2d = getGraphics2D();
-		g2d.drawImage(this.Img.getImage(), 0, 0,getWidth(), getHeight(), null);
+		g2d.drawImage(this.Img.getImage(), 0, 0,getWidth(), getHeight(), null);		
 	}
+	
+	@Override
+	protected void drawStars(int numberOfStars) {}
 	
 	@Override
 	public boolean isLevelWon() {
