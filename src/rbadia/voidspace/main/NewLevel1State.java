@@ -22,7 +22,6 @@ public class NewLevel1State extends Level1State {
 
 	protected Asteroid asteroid2;
 	protected Asteroid bigAsteroid;
-	//Rectangle bigAsteroidExplosion;
 	
 	ImageIcon Img = new ImageIcon(getClass().getResource("/rbadia/voidspace/graphics/BackLevel1.png"));
 	
@@ -40,7 +39,6 @@ public class NewLevel1State extends Level1State {
 		// init game variables
 		bullets = new ArrayList<Bullet>();
 		bigBullets = new ArrayList<BigBullet>();
-		//numPlatforms = new Platform[5];
 
 		GameStatus status = this.getGameStatus();
 
@@ -299,7 +297,7 @@ public class NewLevel1State extends Level1State {
 		Graphics2D g2d = getGraphics2D();
 		GameStatus status = getGameStatus();
 		if((asteroid2.getX() + asteroid2.getPixelsWide() >  0)) {
-			asteroid2.translate(-asteroid2.getSpeed(), asteroid2.getSpeed()/2);
+			asteroid2.translate(-asteroid2.getSpeed()*2, asteroid2.getSpeed()/2);
 			((NewGraphicsManager)getGraphicsManager()).drawAsteroid2(asteroid2, g2d, this);
 		}
 		else {
@@ -329,7 +327,7 @@ public class NewLevel1State extends Level1State {
 		Graphics2D g2d = getGraphics2D();
 		GameStatus status = getGameStatus();
 		if(bigAsteroid.getX() + bigAsteroid.getPixelsWide() > 0) {
-			bigAsteroid.translate(-bigAsteroid.getSpeed(),bigAsteroid.getSpeed()/2);
+			bigAsteroid.translate(-bigAsteroid.getSpeed(), bigAsteroid.getSpeed()/64);
 			((NewGraphicsManager)getGraphicsManager()).drawBigAsteroid(bigAsteroid, g2d, this);
 		}
 		else {
@@ -338,8 +336,8 @@ public class NewLevel1State extends Level1State {
 
 				//lastAsteroidTime = currentTime;
 				status.setNewBigAsteroid(false);
-				bigAsteroid.setLocation(this.getWidth()-bigAsteroid.getPixelsWide(),
-						   rand.nextInt(this.getHeight() - bigAsteroid.getPixelsTall() - 64));
+				bigAsteroid.setLocation(this.getWidth() - bigAsteroid.getPixelsWide(),
+						  rand.nextInt(this.getHeight() - bigAsteroid.getPixelsTall() - 64));
 			}
 			else {
 				// draw explosion
@@ -370,7 +368,7 @@ public class NewLevel1State extends Level1State {
 		GameStatus status = getGameStatus();
 		for(int i=0; i<bullets.size(); i++){
 			Bullet bullet = bullets.get(i);
-			if(bigAsteroid.intersects(bullet)){
+			if(bigAsteroid.intersects(bullet)){				
 				// increase asteroids destroyed count
 				status.setAsteroidsDestroyed(status.getAsteroidsDestroyed() + 200);
 				removeAsteroid(bigAsteroid);
@@ -388,12 +386,16 @@ public class NewLevel1State extends Level1State {
 		GameStatus status = getGameStatus();
 		for(int i=0; i<bigBullets.size(); i++){
 			BigBullet bigBullet = bigBullets.get(i);
-			if(bigAsteroid.intersects(bigBullet)){
+			if((bigAsteroid.intersects(bigBullet))){
 				// increase asteroids destroyed count
 				status.setAsteroidsDestroyed(status.getAsteroidsDestroyed() + 300);
 				removeAsteroid(bigAsteroid);
+				levelAsteroidsDestroyed++;
 				damage=0;
-			}
+				// remove bullet
+				bigBullets.remove(i);
+				break;
+			}	
 		}
 	}
 	

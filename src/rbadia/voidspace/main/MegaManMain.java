@@ -54,6 +54,7 @@ public class MegaManMain {
 		int playAgain = 2;
 		while(playAgain != 1) {	
 			
+			frame.setResizable(false);
 			gameStatus.setAsteroidsDestroyed(0);
 			gameStatus.setLivesLeft(3);
 			LevelState newlevel1State = new NewLevel1State(1, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
