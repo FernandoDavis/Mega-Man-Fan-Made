@@ -72,7 +72,7 @@ public class NewLevel1State extends Level1State {
 	@Override
 	public void doInitialScreen() {
 		setCurrentState(INITIAL_SCREEN);
-		clearScreen();
+		clearScreen2();///////////////////////////////Este pinta el menu
 		getGameLogic().drawInitialMessage();
 	};
 	
