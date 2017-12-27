@@ -322,7 +322,7 @@ public class NewLevel1State extends Level1State {
 		bigAsteroid = new Asteroid(xPos, yPos);
 		return bigAsteroid;
 	}
-	
+
 	protected void drawBigAsteroid() {
 		Graphics2D g2d = getGraphics2D();
 		GameStatus status = getGameStatus();
@@ -334,7 +334,7 @@ public class NewLevel1State extends Level1State {
 			long currentTime = System.currentTimeMillis();
 			if((currentTime - lastAsteroidTime) > NEW_ASTEROID_DELAY){
 
-				//lastAsteroidTime = currentTime;
+				lastAsteroidTime = currentTime;
 				status.setNewBigAsteroid(false);
 				bigAsteroid.setLocation(this.getWidth() - bigAsteroid.getPixelsWide(),
 						  rand.nextInt(this.getHeight() - bigAsteroid.getPixelsTall() - 64));

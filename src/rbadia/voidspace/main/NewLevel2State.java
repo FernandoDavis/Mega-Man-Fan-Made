@@ -20,7 +20,7 @@ import rbadia.voidspace.sounds.SoundManager;
  */
 public class NewLevel2State extends NewLevel1State {
 	
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2237698689621378249L;
 
 	// Constructors
 	public NewLevel2State(int level, MainFrame frame, GameStatus status, 
@@ -52,33 +52,12 @@ public class NewLevel2State extends NewLevel1State {
 		return platforms;
 	}
 
-//	@Override
-//	protected void drawAsteroid() {
-//		Graphics2D g2d = getGraphics2D();
-//		if((asteroid.getX() + asteroid.getPixelsWide() >  0)) {
-//			asteroid.translate(-asteroid.getSpeed(), asteroid.getSpeed()/2);
-//			getGraphicsManager().drawAsteroid(asteroid, g2d, this);	
-//		}
-//		else {
-//			long currentTime = System.currentTimeMillis();
-//			if((currentTime - lastAsteroidTime) > NEW_ASTEROID_DELAY){
-//
-//				asteroid.setLocation(this.getWidth() - asteroid.getPixelsWide(),
-//						rand.nextInt(this.getHeight() - asteroid.getPixelsTall() - 32));
-//			}
-//			else {
-//				// draw explosion
-//				getGraphicsManager().drawAsteroidExplosion(asteroidExplosion, g2d, this);
-//			}
-//		}	
-//	}
-
 	@Override
 	protected void drawAsteroid2() {
 		Graphics2D g2d = getGraphics2D();
 		GameStatus status = getGameStatus();
 		if((asteroid2.getX() + asteroid2.getPixelsWide() >  0)) {
-			asteroid2.translate(-asteroid2.getSpeed()*2, asteroid2.getSpeed()/2);
+			asteroid2.translate(asteroid2.getSpeed(), asteroid2.getSpeed());
 			((NewGraphicsManager)getGraphicsManager()).drawAsteroid2(asteroid2, g2d, this);
 		}
 		else {
@@ -87,8 +66,7 @@ public class NewLevel2State extends NewLevel1State {
 
 				lastAsteroidTime = currentTime;
 				status.setNewAsteroid2(false);
-				asteroid2.setLocation(this.getWidth() - asteroid2.getPixelsWide(),
-						rand.nextInt(this.getHeight() - asteroid2.getPixelsTall() - 32));
+				asteroid2.setLocation(0, 1+rand.nextInt(this.getHeight() - asteroid2.getPixelsTall() - 32));
 			}
 			else {
 				// draw explosion
@@ -102,7 +80,7 @@ public class NewLevel2State extends NewLevel1State {
 		Graphics2D g2d = getGraphics2D();
 		GameStatus status = getGameStatus();
 		if(bigAsteroid.getX() + bigAsteroid.getPixelsWide() > 0) {
-			bigAsteroid.translate(-bigAsteroid.getSpeed(), bigAsteroid.getSpeed()/2);
+			bigAsteroid.translate(0, bigAsteroid.getSpeed());
 			((NewGraphicsManager)getGraphicsManager()).drawBigAsteroid(bigAsteroid, g2d, this);
 		}
 		else {
@@ -111,8 +89,7 @@ public class NewLevel2State extends NewLevel1State {
 
 				//lastAsteroidTime = currentTime;
 				status.setNewBigAsteroid(false);
-				bigAsteroid.setLocation(this.getWidth() - bigAsteroid.getPixelsWide(),
-						  rand.nextInt(this.getHeight() - bigAsteroid.getPixelsTall() - 64));
+				bigAsteroid.setLocation(rand.nextInt(this.getWidth()-bigAsteroid.getPixelsWide()-64), 0);
 			}
 			else {
 				// draw explosion
@@ -120,6 +97,7 @@ public class NewLevel2State extends NewLevel1State {
 			}
 		}	
 	}
+
 	
 	@Override
 	public boolean isLevelWon() {
@@ -127,6 +105,6 @@ public class NewLevel2State extends NewLevel1State {
 			return true;
 		}
 		return levelAsteroidsDestroyed >= 8;
-	};
+	}
 	
 }
