@@ -80,8 +80,8 @@ public class Level3State extends NewLevel2State{
 		int j = 0;
 		for(int i=0; i<n; i++){
 			this.platforms[i] = new Platform(0,0);
-			if(i<8) platforms[i].setLocation(50+ i*50, getHeight()/2 + 160 - i*40);
-			if(i>=8) {
+			if(i<getNumPlatforms()/2) platforms[i].setLocation(50+ i*50, getHeight()/2 + 160 - i*40);
+			if(i>=getNumPlatforms()/2) {
 				platforms[i].setLocation(this.getWidth()-100-j*50, getHeight()/2 + 160 - j*40);
 				j++;
 			}
@@ -104,6 +104,6 @@ public class Level3State extends NewLevel2State{
 		if(getInputHandler().isNPressed()) {
 			return true;
 		}
-		return levelAsteroidsDestroyed >= 8; //+5 asteroids
+		return levelAsteroidsDestroyed >= 13; //+5 asteroids
 	}
 }

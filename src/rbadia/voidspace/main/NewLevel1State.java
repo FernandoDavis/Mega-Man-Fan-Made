@@ -17,9 +17,9 @@ import rbadia.voidspace.model.MegaMan;
 import rbadia.voidspace.sounds.SoundManager;
 
 public class NewLevel1State extends Level1State {
-
-	private static final long serialVersionUID = -4781697848857966373L;
-
+	
+	private static final long serialVersionUID = 105819711182316485L;
+	
 	protected Asteroid asteroid2;
 	protected Asteroid bigAsteroid;
 	
