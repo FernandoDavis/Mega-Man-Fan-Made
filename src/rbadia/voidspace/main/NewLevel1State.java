@@ -12,8 +12,12 @@ import rbadia.voidspace.graphics.GraphicsManager;
 import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.model.Asteroid;
 import rbadia.voidspace.model.BigBullet;
+import rbadia.voidspace.model.Boss;
+import rbadia.voidspace.model.BossBullets;
 import rbadia.voidspace.model.Bullet;
+import rbadia.voidspace.model.Floor;
 import rbadia.voidspace.model.MegaMan;
+import rbadia.voidspace.model.Platform;
 import rbadia.voidspace.sounds.SoundManager;
 
 public class NewLevel1State extends Level1State {
@@ -22,6 +26,14 @@ public class NewLevel1State extends Level1State {
 	
 	protected Asteroid asteroid2;
 	protected Asteroid bigAsteroid;
+	protected Boss boss;
+	protected Rectangle bossExplosion;
+	protected List<BossBullets> bossBullets;
+	protected int bossLifes = 5;
+	protected long lastBossLifeTime = 0;
+	public static final int NEW_BOSS = 10;
+	protected static final int NEW_BOSS_DELAY = 500;
+	
 	
 	ImageIcon Img = new ImageIcon(getClass().getResource("/rbadia/voidspace/graphics/BackLevel1.png"));
 	
@@ -46,6 +58,7 @@ public class NewLevel1State extends Level1State {
 		status.setNewAsteroid(false);
 		status.setNewAsteroid2(false);
 		status.setNewBigAsteroid(false);
+		status.setNewBoss(false);
 
 		// init the life and the asteroid
 		newMegaMan();
@@ -54,6 +67,8 @@ public class NewLevel1State extends Level1State {
 		newAsteroid(this);
 		newAsteroid2(this);
 		BigAsteroid(this);
+		newBoss();
+		
 
 		lastAsteroidTime = -NEW_ASTEROID_DELAY;
 		lastLifeTime = -NEW_MEGAMAN_DELAY;
@@ -129,6 +144,17 @@ public class NewLevel1State extends Level1State {
 		this.checkAsteroidFloorCollisions();
 		this.checkAsteroidFloorCollisions2();
 		this.checkBigAsteroidFloorCollisions();
+		////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////BOSS///////////////////////////////////
+		////////////////////////////////////////////////////////////////////////
+		this.drawBoss();
+		this.drawBossBullets();
+		this.checkBossAsteroidCollisions();
+		this.checkBossAsteroidCollisions2();
+		this.checkBossBigAsteroidCollisions();
+		this.checkMegaManBulletBossCollisions();
+		this.checkMegaManBigBulletBossCollisions();
+		
 		
 
 		// update asteroids destroyed (score) label  
@@ -439,7 +465,7 @@ public class NewLevel1State extends Level1State {
 		Graphics2D g2d = getGraphics2D();
 		for(int i=0; i<9; i++){
 			getGraphicsManager().drawFloor(floor[i], g2d, this, i);	
-		//((NewGraphicsManager) getGraphicsManager()).drawFloor2(floor[i], g2d, this, i);	///////////Opcion para cambiar el floor, recordar camniar esta basura
+		//((NewGraphicsManager) getGraphicsManager()).drawFloor2(floor[i], g2d, this, i);	///////////Opcion para cambiar el floor, recordar cambiar esta basura
 		}
 	}
 
@@ -465,4 +491,240 @@ public class NewLevel1State extends Level1State {
 		return levelAsteroidsDestroyed >= 3;
 	};
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	protected void drawBoss() {
+		//draw one of three possible MegaMan poses according to situation
+		Graphics2D g2d = getGraphics2D();
+		GameStatus status = getGameStatus();
+		if(!status.isNewBoss()){
+			if(((bossGravity() == true) || ((bossGravity() == true) && (bossFire() == true))) && boss.getDirection() != 180){
+				((NewGraphicsManager) getGraphicsManager()).drawBossFallR(boss, g2d, this);
+			}
+			
+			else if(((bossGravity() == true) || ((bossGravity() == true) && (bossFire() == true))) && boss.getDirection() == 180){
+				((NewGraphicsManager) getGraphicsManager()).drawBossFallRFlipped(boss, g2d, this);
+			}
+		}
+
+		if(((bossFire() == true) && (bossGravity()==false)) && boss.getDirection() != 180){
+			((NewGraphicsManager) getGraphicsManager()).drawBossFireR(boss, g2d, this);
+		}
+		
+		else if(((bossFire() == true) && (bossGravity()==false)) && boss.getDirection() == 180){
+			((NewGraphicsManager) getGraphicsManager()).drawBossFireRFlipped(boss, g2d, this);
+		}
+
+		if((bossGravity()==false) && (bossFire()==false) && boss.getDirection() != 180){
+			((NewGraphicsManager) getGraphicsManager()).drawBoss(boss, g2d, this);
+			boss.setDirection(0);
+		}
+		
+		else if(((bossGravity()==false) && (bossFire()==false)) && boss.getDirection() == 180){
+			((NewGraphicsManager) getGraphicsManager()).drawBossFlipped(boss, g2d, this);
+			boss.setDirection(180);
+		}
+	}
+	
+	public Boss newBoss(){
+		this.boss = new Boss((getWidth() - Boss.WIDTH) / 2, (getHeight() - Boss.HEIGHT - Boss.Y_OFFSET) / 2);		
+		return boss;
+	}
+	
+	public void bossLife() 
+	{
+		Graphics2D g2d = getGraphics2D();
+		
+		if(getBossLife()<=0) 
+		{
+			this.bossExplosion = this.asteroidExplosion;
+		    ((NewGraphicsManager) getGraphicsManager()).drawBossExplosion(bossExplosion, g2d, this);
+			removeBoss(boss);
+		}
+		
+	}
+	
+	public void setBossLife(int newLifes) 	{ this.bossLifes = newLifes; }
+	
+	public int getBossLife() { return this.bossLifes; }
+	
+	public Boss getBoss() { return boss; }
+	
+	public List<BossBullets> getBossBullets()		{ return this.bossBullets; }
+	
+	public void doNewBoss() {
+		setCurrentState(NEW_BOSS);
+	}
+	
+	public void removeBoss(Boss boss){
+		// "remove" Boss
+		bossExplosion = new Rectangle(
+				boss.x,
+				boss.y,
+				boss.getPixelsWide(),
+				boss.getPixelsTall());
+		boss.setLocation(-boss.getPixelsWide(), -boss.getPixelsTall());
+		this.getGameStatus().setNewBoss(true);
+		// play asteroid explosion sound
+		this.getSoundManager().playAsteroidExplosionSound();
+	}
+	
+	protected void checkBossAsteroidCollisions() {
+		if(asteroid.intersects(boss)){
+			removeAsteroid(asteroid);
+		}
+	}
+	
+	protected void checkBossAsteroidCollisions2() {
+		if(asteroid2.intersects(boss)){
+			removeAsteroid(asteroid2);
+		}
+	}
+	
+	protected void checkBossBigAsteroidCollisions() {
+		if(bigAsteroid.intersects(boss)){
+			removeAsteroid(bigAsteroid);
+		}
+	}
+	
+	protected void checkMegaManBulletBossCollisions() {
+		
+		for(int i=0; i<bullets.size(); i++){
+			Bullet bullet = bullets.get(i);
+			if((boss.intersects(bullet))){
+				//Boss Life decrease -1
+				setBossLife(getBossLife()-1);
+				bossLife();
+				// remove bullet
+				bullets.remove(i);
+				break;
+			}	
+		}
+	}
+	
+	protected void checkMegaManBigBulletBossCollisions() {
+		
+		for(int i=0; i<bigBullets.size(); i++){
+			BigBullet bigBullet = bigBullets.get(i);
+			if((boss.intersects(bigBullet))){
+				//Boss Life decrease -2
+				setBossLife(getBossLife()-2);
+				bossLife();
+				// remove bullet
+				bigBullets.remove(i);
+				break;
+			}	
+		}
+	}
+	
+	protected boolean bossFire(){
+//		Boss boss = this.getBoss();
+//		List<BossBullets> bossBullet = this.getBossBullets();
+//		for(int i=0; i<bossBullet.size(); i++){
+//			BossBullets bossBullet1 = bossBullet.get(i);
+//			if((bossBullet1.getX() <= boss.getX() + boss.getWidth() + 60) && 
+//					(bossBullet1.getX() >= boss.getX() - 60)){
+//				return true;
+//				}
+//			}
+			return false;
+		}
+	
+	public void fireBossBullet(){
+			if(boss.getDirection()==180) 
+			{
+				BossBullets bossBullet2 = new BossBullets (boss.x, boss.y + boss.width/2 - BossBullets.HEIGHT+2);
+				bossBullet2.setDirection(boss.getDirection());
+				bossBullets.add(bossBullet2);
+			}
+			else 
+			{
+				int xPos = boss.x + boss.width - BossBullets.WIDTH / 2;
+				int yPos = boss.y + boss.width/2 - BossBullets.HEIGHT + 4;
+				BossBullets bossBullet = new BossBullets(xPos, yPos);
+				bossBullet.setDirection(boss.getDirection());
+				bossBullets.add(bossBullet);
+				this.getSoundManager().playBulletSound();
+			}
+		}
+	
+	protected void drawBossBullets() {
+		Graphics2D g2d = getGraphics2D();
+		for(int i=0; i<bigBullets.size(); i++){
+			BigBullet bigBullet = bigBullets.get(i);
+			((NewGraphicsManager) getGraphicsManager()).drawBossBullet(bigBullet, g2d, this);
+
+			boolean remove = this.moveBossBullet(bigBullet);
+			if(remove){
+				bigBullets.remove(i);
+				i--;
+			}
+		}
+	}
+	
+	public boolean moveBossBullet(BigBullet bigBullet){
+		if(bigBullet.getX() + bigBullet.getSpeed() > 0 && bigBullet.getDirection() == 180){
+			bigBullet.translate(-bigBullet.getSpeed(), 0);
+			return false;
+		}
+		else if(bigBullet.getX() + bigBullet.getSpeed() + bigBullet.getWidth() < getWidth() && bigBullet.getDirection() == 0){
+			bigBullet.translate(bigBullet.getSpeed(), 0);
+			return false;
+		}
+		else{
+			return true;
+		}
+	};
+	
+	
+	protected boolean bossGravity(){
+		boss = this.getBoss();
+		Floor[] floor = this.getFloor();
+
+		for(int i=0; i<9; i++){
+			if((boss.getY() + boss.getHeight() -17 < this.getHeight() - floor[i].getHeight()/2) 
+					&& bossFall() == true){
+
+				boss.translate(0 , 2);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean bossFall(){
+		boss = this.getBoss(); 
+		Platform[] platforms = this.getPlatforms();
+		for(int i=0; i<getNumPlatforms(); i++){
+			if((((platforms[i].getX() < boss.getX()) && (boss.getX()< platforms[i].getX() + platforms[i].getWidth()))
+					|| ((platforms[i].getX() < boss.getX() + boss.getWidth()) 
+							&& (boss.getX() + boss.getWidth()< platforms[i].getX() + platforms[i].getWidth())))
+					&& boss.getY() + boss.getHeight() == platforms[i].getY()
+					){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public void moveBossUp(){
+		if(boss.getY() - boss.getSpeed() >= 0){
+			boss.translate(0, -boss.getSpeed()*2);
+		}
+	}
+	
+	public void moveBossDown(){
+		for(int i=0; i<9; i++){
+			if(boss.getY() + boss.getSpeed() + boss.height < getHeight() - floor[i].getHeight()/2){
+				boss.translate(0, 2);
+			}
+		}
+	}
+	
+	public void speedUpBoss() {
+		boss.setSpeed(boss.getDefaultSpeed() * 2 +1);
+	}
+
+	public void slowDownBoss() {
+		boss.setSpeed(boss.getDefaultSpeed());
+	}
 }
