@@ -57,7 +57,7 @@ public class Level4State extends Level3State {
 
 		// init the life and the asteroid
 		newMegaMan();
-		newShip();
+		newBossShip();
 		newFloor(this, 9);
 		newPlatforms(getNumPlatforms());
 		newAsteroid(this);
@@ -110,14 +110,22 @@ public class Level4State extends Level3State {
 		getMainFrame().getLevelValueLabel().setText(Long.toString(status.getLevel()));
 	}
 	
-	public Ship newShip(){
+	public Ship newBossShip(){
 		this.bossShip = new Ship((getWidth() - Ship.WIDTH) / 2, (getHeight() - Ship.HEIGHT - Ship.Y_OFFSET) / 2);
+		bossShip.y = (int) (getHeight() - bossShip.getHeight());
+		bossShip.x = (int) (getWidth() - bossShip.getWidth());
 		return bossShip;
 	}
 	
 	protected void drawNewBossShip() {
 		Graphics2D g2d = getGraphics2D();
-		((NewGraphicsManager) getGraphicsManager()).drawShip(bossShip, g2d, this);	
+		((NewGraphicsManager) getGraphicsManager()).drawShip(bossShip, g2d, this);
+		if(bossShip.getY() + bossShip.getSpeed() + bossShip.getHeight() >= 0){
+			bossShip.translate(0, bossShip.getSpeed());
+		}
+		else if(bossShip.getY() + bossShip.getSpeed() + bossShip.getHeight() <= getHeight()){
+			bossShip.translate(0, -bossShip.getSpeed());
+		}
 	}
 	
 	protected void checkBullletShipCollisions() {

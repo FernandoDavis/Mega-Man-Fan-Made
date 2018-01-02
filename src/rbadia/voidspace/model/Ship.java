@@ -6,8 +6,8 @@ public class Ship extends GameObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 1372118837970736302L;
-	public static final int DEFAULT_SPEED = 5;
-	public static final int Y_OFFSET = 10; // initial y distance of the ship from the bottom of the screen 
+	public static final int DEFAULT_SPEED = 2;
+	public static final int Y_OFFSET = 0; // initial y distance of the ship from the bottom of the screen 
 	
 	public static final int WIDTH = 42;
 	public static final int HEIGHT = 41;
