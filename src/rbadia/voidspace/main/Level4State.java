@@ -25,10 +25,11 @@ public class Level4State extends Level3State {
 	}
 	
 	protected Ship bossShip;
+	protected boolean shipUp = false;
 	protected int levelBossShipHits = 0;
 	protected Rectangle shipExplosion;
 	
-	public Ship getShip() {
+	public Ship getBossShip() {
 		return bossShip;
 	}
 
@@ -93,6 +94,7 @@ public class Level4State extends Level3State {
 		drawPlatforms();
 		drawMegaMan();
 		drawNewBossShip();
+		moveShipVertically(bossShip);
 		drawAsteroid();
 		drawBullets();
 		drawBigBullets();
@@ -112,7 +114,7 @@ public class Level4State extends Level3State {
 	
 	public Ship newBossShip(){
 		this.bossShip = new Ship((getWidth() - Ship.WIDTH) / 2, (getHeight() - Ship.HEIGHT - Ship.Y_OFFSET) / 2);
-		bossShip.y = (int) (getHeight() - bossShip.getHeight());
+		bossShip.y = (int) (getHeight()/2 - bossShip.getHeight());
 		bossShip.x = (int) (getWidth() - bossShip.getWidth());
 		return bossShip;
 	}
@@ -120,11 +122,44 @@ public class Level4State extends Level3State {
 	protected void drawNewBossShip() {
 		Graphics2D g2d = getGraphics2D();
 		((NewGraphicsManager) getGraphicsManager()).drawShip(bossShip, g2d, this);
-		if(bossShip.getY() + bossShip.getSpeed() + bossShip.getHeight() >= 0){
-			bossShip.translate(0, bossShip.getSpeed());
+	}
+	
+	protected void moveShipVertically(Ship ship) {	
+		if(touchUpperScreen(ship)){
+			shipUp = false;
+			ship.translate(0, ship.getSpeed());
 		}
-		else if(bossShip.getY() + bossShip.getSpeed() + bossShip.getHeight() <= getHeight()){
-			bossShip.translate(0, -bossShip.getSpeed());
+		else if(touchBottomScreen(ship)) {
+			shipUp = true;
+			ship.translate(0, -ship.getSpeed());
+		}
+		else if(!touchUpperScreen(ship) && !touchBottomScreen(ship)){
+			if(shipUp) {
+				ship.translate(0, -ship.getSpeed());
+			}
+			else if(!shipUp) {
+				ship.translate(0, ship.getSpeed());
+			}
+		}
+		
+		
+	}
+	
+	protected boolean touchUpperScreen(Ship ship){
+		if(ship.getY() <= 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	protected boolean touchBottomScreen(Ship ship){
+		if(ship.getY() >= getHeight()-ship.getHeight()) {
+			return true;
+		}
+		else {
+			return false;
 		}
 	}
 	
