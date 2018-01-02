@@ -15,7 +15,7 @@ public class NewGraphicsManager extends GraphicsManager {
 	private BufferedImage megaManImgFlipped;
 	private BufferedImage megaFallRImgFlipped;
 	private BufferedImage megaFireRImgFlipped;
-	private BufferedImage ship;
+	private BufferedImage bossShip;
 	
 	public NewGraphicsManager() {
 		super();
@@ -23,7 +23,7 @@ public class NewGraphicsManager extends GraphicsManager {
 			this.megaManImgFlipped = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/megaMan3Flipped.png"));
 			this.megaFallRImgFlipped = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/megaFallRightFlipped.png"));
 			this.megaFireRImgFlipped = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/megaFireRightFlipped.png"));
-			this.ship = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/ship.png"));
+			this.bossShip = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/ship.png"));
 			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "The graphic files are either corrupt or missing.",
@@ -45,8 +45,8 @@ public class NewGraphicsManager extends GraphicsManager {
 		g2d.drawImage(megaFireRImgFlipped, megaMan.x, megaMan.y, observer);	
 	}
 	
-	public void drawShip (Ship ship, Graphics2D g2d, ImageObserver observer){
-		g2d.drawImage(this.ship, ship.x, ship.y, observer);	
+	public void drawbossShip (Ship ship, Graphics2D g2d, ImageObserver observer){
+		g2d.drawImage(this.bossShip, ship.x, ship.y, observer);	
 	}
 	
 }

@@ -24,6 +24,8 @@ public class Level4State extends Level3State {
 		// TODO Auto-generated constructor stub
 	}
 	
+	protected int numPlatforms=16;
+	public int getNumPlatforms() {return numPlatforms;}
 	protected Ship bossShip;
 	protected boolean shipUp = false;
 	protected int levelBossShipHits = 0;
@@ -121,10 +123,10 @@ public class Level4State extends Level3State {
 	
 	protected void drawNewBossShip() {
 		Graphics2D g2d = getGraphics2D();
-		((NewGraphicsManager) getGraphicsManager()).drawShip(bossShip, g2d, this);
+		((NewGraphicsManager) getGraphicsManager()).drawbossShip(bossShip, g2d, this);
 	}
 	
-	protected void moveShipVertically(Ship ship) {	
+	protected void moveShipVertically(Ship ship) {
 		if(touchUpperScreen(ship)){
 			shipUp = false;
 			ship.translate(0, ship.getSpeed());
@@ -140,9 +142,7 @@ public class Level4State extends Level3State {
 			else if(!shipUp) {
 				ship.translate(0, ship.getSpeed());
 			}
-		}
-		
-		
+		}	
 	}
 	
 	protected boolean touchUpperScreen(Ship ship){
