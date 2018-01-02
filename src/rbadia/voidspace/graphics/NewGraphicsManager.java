@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import rbadia.voidspace.model.Asteroid;
 import rbadia.voidspace.model.BigBullet;
 import rbadia.voidspace.model.Boss;
+import rbadia.voidspace.model.BossBullets;
 import rbadia.voidspace.model.Floor;
 import rbadia.voidspace.model.MegaMan;
 import rbadia.voidspace.model.Platform;
@@ -95,8 +96,8 @@ public class NewGraphicsManager extends GraphicsManager {
 		g2d.drawImage(asteroidExplosionImg2, asteroidExplosion.x, asteroidExplosion.y, observer);
 	}
 
-	public void drawBigAsteroidExplosion(Rectangle asteroidExplosion, Graphics2D g2d, ImageObserver observer) {
-		g2d.drawImage(bigAsteroidExplosionImg, asteroidExplosion.x, asteroidExplosion.y, observer);
+	public void drawBigAsteroidExplosion(Rectangle bigAsteroidExplosion, Graphics2D g2d, ImageObserver observer) {
+		g2d.drawImage(bigAsteroidExplosionImg, bigAsteroidExplosion.x, bigAsteroidExplosion.y, observer);
 	}
 	
 	public void drawFloor2 (Floor floor, Graphics2D g2d, ImageObserver observer, int i){
@@ -129,8 +130,8 @@ public class NewGraphicsManager extends GraphicsManager {
 		g2d.drawImage(bossFireRImgFlipped, boss.x, boss.y, observer);	
 	}
 	
-	public void drawBossBullet(BigBullet bigBullet, Graphics2D g2d, ImageObserver observer) {
-		g2d.drawImage(bossBulletImg, bigBullet.x, bigBullet.y, observer);
+	public void drawBossBullet(BossBullets bossBullet, Graphics2D g2d, ImageObserver observer) {
+		g2d.drawImage(bossBulletImg, bossBullet.x, bossBullet.y, observer);
 	}
 	
 	public void drawBossExplosion(Rectangle bossExplosion, Graphics2D g2d, ImageObserver observer) {

@@ -21,6 +21,31 @@ public class Boss extends GameObject {
 
 	public int getDefaultSpeed(){
 		return DEFAULT_SPEED;
+	}	
+	
+	public boolean touchLeftScreen(Boss boss){
+		if(boss.getX() <= WIDTH){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	public boolean touchRightScreen(Boss boss){
+		if(boss.getX() >= this.getWidth()-WIDTH){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 	
+	public boolean jump (Boss boss){
+		if(boss.getY() >= HEIGHT){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 }

@@ -12,7 +12,7 @@ public class BossBullets extends GameObject {
 	
 	public BossBullets(int xPos, int yPos) {
 		super(xPos, yPos, WIDTH, HEIGHT);
-		this.setSpeed(12);
+		this.setSpeed(15);
 	}
 	public int getDefaultSpeed(){
 		return DEFAULT_SPEED;
