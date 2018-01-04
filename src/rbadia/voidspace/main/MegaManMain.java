@@ -35,7 +35,7 @@ public class MegaManMain {
 
 
 		MainFrame frame = new MainFrame();              		// Main Game Window
-		GameStatus gameStatus = new GameStatus();       		// Records overall status of game across all levels
+		NewGameStatus gameStatus = new NewGameStatus();       		// Records overall status of game across all levels
 		NewLevelLogic gameLogic = new NewLevelLogic();        		// Coordinates among various levels
 		InputHandler inputHandler = new InputHandler(); 		// Keyboard listener
 		NewGraphicsManager graphicsMan = new NewGraphicsManager(); // Draws all graphics for game objects
@@ -56,12 +56,11 @@ public class MegaManMain {
 			
 			gameStatus.setAsteroidsDestroyed(0);
 			gameStatus.setLivesLeft(3);
-//			LevelState newlevel1State = new NewLevel1State(1, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
-//			LevelState newlevel2State = new NewLevel2State(2, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
-//			LevelState level3State = new Level3State(3, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
+			LevelState newlevel1State = new NewLevel1State(1, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
+			LevelState newlevel2State = new NewLevel2State(2, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
+			LevelState level3State = new Level3State(3, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
 			LevelState level4State = new Level4State(4, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
-//			LevelState levels[] = { newlevel1State, newlevel2State, level3State, level4State };
-			LevelState levels[] = { level4State };
+			LevelState levels[] = { newlevel1State, newlevel2State, level3State, level4State };
 
 			String outcome = "CONGRATS!! YOU WON!!";
 			for (LevelState nextLevel : levels) {

@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.List;
 
 import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.model.BigBullet;
 import rbadia.voidspace.model.Bullet;
+import rbadia.voidspace.model.Platform;
 import rbadia.voidspace.model.Ship;
 import rbadia.voidspace.sounds.SoundManager;
 
@@ -18,7 +20,7 @@ public class Level4State extends Level3State {
 	 */
 	private static final long serialVersionUID = 8738640199070011353L;
 
-	public Level4State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
+	public Level4State(int level, MainFrame frame, NewGameStatus status, NewLevelLogic gameLogic,
 			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 		// TODO Auto-generated constructor stub
@@ -27,8 +29,17 @@ public class Level4State extends Level3State {
 	protected int numPlatforms=16;
 	public int getNumPlatforms() {return numPlatforms;}
 	protected Ship bossShip;
+	protected Ship ship1;
+	protected Ship ship2;
+	protected Ship ship3;
+	protected Ship ship4;
+	protected Ship[] ships = {ship1, ship2, ship3, ship4};
+	protected List<Bullet> shipBullets;
+	protected List<BigBullet> shipBigBullets;
 	protected boolean shipUp = false;
 	protected int levelBossShipHits = 0;
+	protected int[] levelShipHits = new int[4];
+	protected int counter = 0;
 	protected Rectangle shipExplosion;
 	
 	public Ship getBossShip() {
@@ -40,43 +51,21 @@ public class Level4State extends Level3State {
 		if(getInputHandler().isNPressed()) {
 			return true;
 		}
-		return levelBossShipHits >= 5 && levelAsteroidsDestroyed >= 3;
+		return counter >= 4 && levelBossShipHits >= 45 && levelAsteroidsDestroyed >= 13;
 	};
 	
 	@Override
 	public void doStart() {	
-
-		setStartState(START_STATE);
+		super.doStart();
+		setStartState(GETTING_READY);
 		setCurrentState(getStartState());
-		// init game variables
-		bullets = new ArrayList<Bullet>();
-		bigBullets = new ArrayList<BigBullet>();
-		//numPlatforms = new Platform[5];
-
-		GameStatus status = this.getGameStatus();
-
-		status.setGameOver(false);
-		status.setNewAsteroid(false);
-
-		// init the life and the asteroid
-		newMegaMan();
+		for(int i = 0; i<4; i++) {
+			ships[i] = newShip();
+		}
 		newBossShip();
-		newFloor(this, 9);
 		newPlatforms(getNumPlatforms());
-		newAsteroid(this);
-
-		lastAsteroidTime = -NEW_ASTEROID_DELAY;
-		lastLifeTime = -NEW_MEGAMAN_DELAY;
-
-		bigFont = originalFont;
-		biggestFont = null;
-
-		// Display initial values for scores
-		getMainFrame().getDestroyedValueLabel().setForeground(Color.BLACK);
-		getMainFrame().getLivesValueLabel().setText(Integer.toString(status.getLivesLeft()));
-		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
-		getMainFrame().getLevelValueLabel().setText(Long.toString(status.getLevel()));
-
+		GameStatus status = this.getGameStatus();
+		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed() + ((NewGameStatus) status).getShipsDestroyed()));
 	}
 	
 	@Override
@@ -89,30 +78,61 @@ public class Level4State extends Level3State {
 			this.originalFont = g2d.getFont();
 			this.bigFont = originalFont;
 		}
-
 		clearScreen();
 		drawStars(50);
 		drawFloor();
 		drawPlatforms();
 		drawMegaMan();
 		drawNewBossShip();
-		moveShipVertically(bossShip);
+		if(counter>=2) {
+			moveShipVertically(bossShip);
+		}
+		else {
+			bossShip.y = 2*(getHeight()/5);
+		}
+		for(int i = 0; i<4; i++) {
+			drawNewShip(ships[i]);
+			if(i<2) {
+				ships[i].y = i*(getHeight()/5);
+			}
+			else if(i>=2) {
+				ships[i].y = (i+1)*(getHeight()/5);
+			}
+		}		
 		drawAsteroid();
 		drawBullets();
 		drawBigBullets();
 		checkBullletAsteroidCollisions();
-		checkBullletShipCollisions();
+		checkBulletBossShipCollisions();
+		checkBulletShipCollisions(ships);
+		checkBigBulletBossShipCollisions();
+		checkBigBulletShipCollisions(ships);
 		checkBigBulletAsteroidCollisions();
 		checkMegaManAsteroidCollisions();
 		checkAsteroidFloorCollisions();
 
 		// update asteroids destroyed (score) label  
-		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
+		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed() + ((NewGameStatus) status).getShipsDestroyed()));
 		// update lives left label
 		getMainFrame().getLivesValueLabel().setText(Integer.toString(status.getLivesLeft()));
 		//update level label
 		getMainFrame().getLevelValueLabel().setText(Long.toString(status.getLevel()));
-	}
+	};
+	
+	@Override
+	public Platform[] newPlatforms(int n){
+		platforms = new Platform[n];
+		int j = 0;
+		for(int i=0; i<n; i++){
+			this.platforms[i] = new Platform(0,0);
+			if(i<10) platforms[i].setLocation(0, getHeight() - i*40);
+			if(i>=10) {
+				platforms[i].setLocation(this.getWidth()-100-j*50, getHeight()/2 + 160 - j*40);
+				j++;
+			}
+		}	
+		return platforms;
+	};
 	
 	public Ship newBossShip(){
 		this.bossShip = new Ship((getWidth() - Ship.WIDTH) / 2, (getHeight() - Ship.HEIGHT - Ship.Y_OFFSET) / 2);
@@ -121,9 +141,21 @@ public class Level4State extends Level3State {
 		return bossShip;
 	}
 	
+	public Ship newShip(){
+		Ship ship = new Ship((getWidth() - Ship.WIDTH) / 2, (getHeight() - Ship.HEIGHT - Ship.Y_OFFSET) / 2);
+		ship.y = (int) (getHeight() - ship.getHeight());
+		ship.x = (int) (getWidth() - ship.getWidth());
+		return ship;
+	}
+	
 	protected void drawNewBossShip() {
 		Graphics2D g2d = getGraphics2D();
-		((NewGraphicsManager) getGraphicsManager()).drawbossShip(bossShip, g2d, this);
+		((NewGraphicsManager) getGraphicsManager()).drawBossShip(bossShip, g2d, this);
+	}
+	
+	protected void drawNewShip(Ship ship) {
+		Graphics2D g2d = getGraphics2D();
+		((NewGraphicsManager) getGraphicsManager()).drawShip(ship, g2d, this);
 	}
 	
 	protected void moveShipVertically(Ship ship) {
@@ -148,7 +180,7 @@ public class Level4State extends Level3State {
 	protected boolean touchUpperScreen(Ship ship){
 		if(ship.getY() <= 0) {
 			return true;
-		}
+		}  
 		else {
 			return false;
 		}
@@ -163,16 +195,74 @@ public class Level4State extends Level3State {
 		}
 	}
 	
-	protected void checkBullletShipCollisions() {
+	protected void checkBulletBossShipCollisions(){
+		GameStatus status = getGameStatus();
 		for(int i=0; i<bullets.size(); i++){
 			Bullet bullet = bullets.get(i);
 			if(bossShip.intersects(bullet)){
 				levelBossShipHits++;
 				bullets.remove(i);
-				if(levelBossShipHits>=5) {
+				if(levelBossShipHits>=45) {
+					((NewGameStatus) status).setShipsDestroyed(((NewGameStatus) status).getShipsDestroyed() + 2000);
 					removeShip(bossShip);
 				}
 				break;
+			}
+		}
+	}
+	
+	protected void checkBulletShipCollisions(Ship[] ships) {
+		GameStatus status = getGameStatus();
+		for(int i=0; i<bullets.size(); i++){
+			Bullet bullet = bullets.get(i);
+				for(int j = 0; j<levelShipHits.length; j++) {
+					if(ships[j].intersects(bullet)){
+						levelShipHits[j]++;
+						bullets.remove(i);
+					
+					if(levelShipHits[j]>=15) {
+						((NewGameStatus) status).setShipsDestroyed(((NewGameStatus) status).getShipsDestroyed() + 500);
+						counter++;
+						removeShip(ships[j]);
+					}	
+					break;
+				}
+				
+			}
+		}
+	}
+	
+	protected void checkBigBulletBossShipCollisions() {
+		GameStatus status = getGameStatus();
+		for(int i=0; i<bigBullets.size(); i++){
+			BigBullet bigBullet = bigBullets.get(i);
+			if(bossShip.intersects(bigBullet)){
+				levelBossShipHits+=15;
+				bigBullets.remove(i);
+				if(levelBossShipHits>=45) {
+					((NewGameStatus) status).setShipsDestroyed(((NewGameStatus) status).getShipsDestroyed() + 2000);
+					removeShip(bossShip);
+				}
+				break;
+			}
+		}
+	}
+	
+	protected void checkBigBulletShipCollisions(Ship[] ships) {
+		GameStatus status = getGameStatus();
+		for(int i=0; i<bigBullets.size(); i++){
+			BigBullet bigBullet = bigBullets.get(i);
+				for(int j = 0; j<levelShipHits.length; j++) {
+					if(ships[j].intersects(bigBullet)){
+						levelShipHits[j]+=15;
+						bigBullets.remove(i);
+					if(levelShipHits[j]>=15) {
+						((NewGameStatus) status).setShipsDestroyed(((NewGameStatus) status).getShipsDestroyed() + 500);
+						counter++;
+						removeShip(ships[j]);
+					}	
+					break;
+				}
 			}
 		}
 	}
@@ -183,8 +273,7 @@ public class Level4State extends Level3State {
 				ship.y,
 				ship.getPixelsWide(),
 				ship.getPixelsTall());
-		ship.setLocation(-ship.getPixelsWide(), -ship.getPixelsTall());
+		ship.setLocation(100000, 1000000);
 		this.getSoundManager().playShipExplosionSound();
 	}
-	
 }
