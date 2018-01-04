@@ -1,7 +1,10 @@
-package rbadia.voidspace.graphics;
+package rbadia.voidspace.graphics
 
 import java.awt.Graphics2D;
+
 import java.awt.Rectangle;
+import java.awt.Image;
+
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 
@@ -16,7 +19,10 @@ import rbadia.voidspace.model.Boss;
 import rbadia.voidspace.model.BossBullets;
 import rbadia.voidspace.model.Floor;
 import rbadia.voidspace.model.MegaMan;
+
 import rbadia.voidspace.model.Platform;
+import rbadia.voidspace.model.Ship;
+
 
 public class NewGraphicsManager extends GraphicsManager {
 	private BufferedImage megaManImgFlipped;
@@ -47,7 +53,10 @@ public class NewGraphicsManager extends GraphicsManager {
 	private ImageIcon backgroundImageLevel2;
 	private ImageIcon backgroundImageLevel3;
 	private ImageIcon backgroundImageLevel4;
-	
+	private BufferedImage bossShip;
+	private BufferedImage ship;
+
+
 	public NewGraphicsManager() {
 		super();
 		try {
@@ -80,7 +89,9 @@ public class NewGraphicsManager extends GraphicsManager {
 			this.bossFireRImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/megaFireRight.png"));
 			this.bossExplosionImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/bigAsteroidExplosion.png"));
 			this.bossBulletImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/bigBullet.png"));
-
+			this.bossShip = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/enemyShip.png"));
+			this.ship = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/enemyShip2.png"));
+			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "The graphic files are either corrupt or missing.",
 					"VoidSpace - Fatal Error", JOptionPane.ERROR_MESSAGE);
@@ -199,4 +210,12 @@ public class NewGraphicsManager extends GraphicsManager {
 	public void drawBossExplosion(Rectangle bossExplosion, Graphics2D g2d, ImageObserver observer) {
 		g2d.drawImage(bossExplosionImg, bossExplosion.x, bossExplosion.y, observer);
 	}
+
+	public void drawBossShip (Ship ship, Graphics2D g2d, ImageObserver observer){
+		g2d.drawImage(this.bossShip, ship.x, ship.y, observer);	
+	}
+	
+	public void drawShip (Ship ship, Graphics2D g2d, ImageObserver observer){
+		g2d.drawImage(this.ship, ship.x, ship.y, observer);	
+	}	
 }

@@ -26,7 +26,9 @@ public class Level3State extends NewLevel2State{
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 		// TODO Auto-generated constructor stub
 	}
-	
+
+	protected int numPlatforms=16;
+
 	public int getNumPlatforms() {return numPlatforms;}
 	
 	@Override
@@ -42,8 +44,12 @@ public class Level3State extends NewLevel2State{
 		setStartState(GETTING_READY);
 		setCurrentState(getStartState());
 		newPlatforms(getNumPlatforms());
+
 	}
 	
+
+
+
 	@Override
 	protected void drawAsteroid() {
 		Graphics2D g2d = getGraphics2D();
@@ -55,11 +61,15 @@ public class Level3State extends NewLevel2State{
 		else {
 			long currentTime = System.currentTimeMillis();
 			if((currentTime - lastAsteroidTime) > NEW_ASTEROID_DELAY){
+
 				// draw a new asteroid
 				lastAsteroidTime = currentTime;
 				status.setNewAsteroid(false);
 				asteroid.setLocation((int) (this.getWidth() - asteroid.getPixelsWide()),
 						(rand.nextInt((int) (this.getHeight() - asteroid.getPixelsTall() - 32))));
+
+				asteroid.setLocation(this.getWidth() - asteroid.getPixelsWide(),
+						rand.nextInt(this.getHeight() - asteroid.getPixelsTall() - 32));
 			}
 
 			else{

@@ -16,7 +16,6 @@ import javax.swing.JOptionPane;
 import rbadia.voidspace.graphics.GraphicsManager;
 import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.sounds.SoundManager;
-
 /**
  * Main game class. Starts the game.
  */
@@ -27,7 +26,6 @@ public class MegaManMain {
 	public static AudioInputStream audioStream;
 	public static Clip audioClip;
 	public static File audioFile;	
-
 	/**
 	 * @param args
 	 */
@@ -35,7 +33,7 @@ public class MegaManMain {
 
 
 		MainFrame frame = new MainFrame();              		// Main Game Window
-		GameStatus gameStatus = new GameStatus();       		// Records overall status of game across all levels
+		NewGameStatus gameStatus = new NewGameStatus();       		// Records overall status of game across all levels
 		NewLevelLogic gameLogic = new NewLevelLogic();        		// Coordinates among various levels
 		InputHandler inputHandler = new InputHandler(); 		// Keyboard listener
 		NewGraphicsManager graphicsMan = new NewGraphicsManager(); // Draws all graphics for game objects
@@ -61,7 +59,9 @@ public class MegaManMain {
 			LevelState newlevel2State = new NewLevel2State(2, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
 			LevelState level3State = new Level3State(3, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
 			LevelState level4State = new Level4State(4, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
-			LevelState levels[] = { newlevel1State, newlevel2State, level3State,level4State};
+						LevelState level5State = new Level5State(5, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
+			LevelState levels[] = { newlevel1State, newlevel2State, level3State, level4State, level5State };
+
 
 			String outcome = "CONGRATS!! YOU WON!!";
 			for (LevelState nextLevel : levels) {
