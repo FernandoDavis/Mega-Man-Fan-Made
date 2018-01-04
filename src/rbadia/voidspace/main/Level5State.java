@@ -1,6 +1,5 @@
 package rbadia.voidspace.main;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class Level5State extends Level3State {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 	}
 	
-	protected int numPlatforms=16;
+	protected int numPlatforms=20;
 	public int getNumPlatforms() {return numPlatforms;}
 	protected Ship bossShip;
 	protected Ship ship1;
@@ -82,11 +81,8 @@ public class Level5State extends Level3State {
 			this.originalFont = g2d.getFont();
 			this.bigFont = originalFont;
 		}
-		clearScreen();
-		drawStars(50);
-		drawFloor();
-		drawPlatforms();
-		drawMegaMan();
+		
+		this.clearScreen();
 		drawNewBossShip();
 		if(counter>=2) {
 			moveShipVertically(bossShip);
@@ -103,18 +99,31 @@ public class Level5State extends Level3State {
 				ships[i].y = (i+1)*(getHeight()/5);
 			}
 		}		
-		drawAsteroid();
-		drawBullets();
-		drawBigBullets();
-		checkBullletAsteroidCollisions();
 		checkBulletBossShipCollisions();
 		checkBulletShipCollisions(ships);
 		checkBigBulletBossShipCollisions();
 		checkBigBulletShipCollisions(ships);
-		checkBigBulletAsteroidCollisions();
-		checkMegaManAsteroidCollisions();
-		checkAsteroidFloorCollisions();
-
+		this.drawStars(50);
+		this.drawFloor();
+		this.drawPlatforms();
+		this.drawMegaMan();
+		this.drawAsteroid();
+		this.drawAsteroid2();
+		this.drawBigAsteroid();
+		this.drawBullets();
+		this.drawBigBullets();
+		this.checkBullletAsteroidCollisions();
+		this.checkBullletAsteroidCollisions2();
+		this.checkBullletBigAsteroidCollisions();
+		this.checkBigBulletAsteroidCollisions();
+		this.checkBigBulletBigAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions2();
+		this.checkMegaManBigAsteroidCollisions();
+		this.checkAsteroidFloorCollisions();
+		this.checkAsteroidFloorCollisions2();
+		this.checkBigAsteroidFloorCollisions();
+		
 		// update asteroids destroyed (score) label  
 		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed() + ((NewGameStatus) status).getShipsDestroyed()));
 		// update lives left label

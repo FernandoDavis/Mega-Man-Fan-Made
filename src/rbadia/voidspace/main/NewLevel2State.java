@@ -26,8 +26,8 @@ public class NewLevel2State extends NewLevel1State {
 
 	// Constructors
 	public NewLevel2State(int level, MainFrame frame, GameStatus status, 
-			LevelLogic gameLogic, InputHandler inputHandler,
-			GraphicsManager graphicsMan, SoundManager soundMan) {
+			NewLevelLogic gameLogic, InputHandler inputHandler,
+			NewGraphicsManager graphicsMan, SoundManager soundMan) {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 	}
 	
@@ -43,6 +43,46 @@ public class NewLevel2State extends NewLevel1State {
 		setStartState(GETTING_READY);
 		setCurrentState(getStartState());
 		TransitionImage();
+	};
+	
+	@Override
+	public void updateScreen(){
+		Graphics2D g2d = getGraphics2D();
+		GameStatus status = this.getGameStatus();
+
+		// save original font - for later use
+		if(this.originalFont == null){
+			this.originalFont = g2d.getFont();
+			this.bigFont = originalFont;
+		}
+
+		this.clearScreen();
+		this.drawStars(50);
+		this.drawFloor();
+		this.drawPlatforms();
+		this.drawMegaMan();
+		this.drawAsteroid();
+		this.drawAsteroid2();
+		this.drawBullets();
+		this.drawBigBullets();
+		this.checkBullletAsteroidCollisions();
+		this.checkBullletAsteroidCollisions2();
+		this.checkBullletBigAsteroidCollisions();
+		this.checkBigBulletAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions2();
+		this.checkBullletAsteroidCollisions();
+		this.checkBigBulletAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions();
+		this.checkAsteroidFloorCollisions();
+		this.checkAsteroidFloorCollisions2();
+
+		// update asteroids destroyed (score) label  
+		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
+		// update lives left label
+		getMainFrame().getLivesValueLabel().setText(Integer.toString(status.getLivesLeft()));
+		//update level label
+		getMainFrame().getLevelValueLabel().setText(Long.toString(status.getLevel()));
 	}
 	
 	@Override
@@ -59,7 +99,7 @@ public class NewLevel2State extends NewLevel1State {
 			}
 		}
 		return platforms;
-	}
+	};
 
 	@Override
 	protected void drawAsteroid2() {
@@ -82,7 +122,7 @@ public class NewLevel2State extends NewLevel1State {
 				((NewGraphicsManager) getGraphicsManager()).drawAsteroidExplosion2(asteroidExplosion, g2d, this);
 			}
 		}	
-	}
+	};
 	
 	@Override
 	protected void drawBigAsteroid() {
@@ -105,7 +145,7 @@ public class NewLevel2State extends NewLevel1State {
 				((NewGraphicsManager) getGraphicsManager()).drawBigAsteroidExplosion(asteroidExplosion, g2d, this);
 			}
 		}	
-	}
+	};
 	
 	@Override
 	protected void drawFloor() {
@@ -114,21 +154,24 @@ public class NewLevel2State extends NewLevel1State {
 		for(int i=0; i<9; i++){
 		((NewGraphicsManager) getGraphicsManager()).drawFloor2(floor[i], g2d, this, i);
 		}
-	}
+	};
 	
 	@Override
 	protected void clearScreen() {
 		// clear screen
 		Graphics2D g2d = getGraphics2D();
 		((NewGraphicsManager) getGraphicsManager()).BackgroundImageLevel2(g2d, getMainFrame(), this);
-	}
+	};
 	
 	@Override
-
 	public boolean isLevelWon() {
 		if(getInputHandler().isNPressed()) {
 			return true;
-
+		}
+		return levelAsteroidsDestroyed >= 8;
+	};
+	
+	@Override
 	protected boolean Fire(){
 		MegaMan megaMan = this.getMegaMan();
 		List<Bullet> bullets = this.getBullets();
@@ -171,9 +214,6 @@ public class NewLevel2State extends NewLevel1State {
 		if(megaMan.getX() - megaMan.getSpeed() >= 0){
 			megaMan.translate(-megaMan.getSpeed(), 0);
 			megaMan.setDirection(180);
-
 		}
-		return levelAsteroidsDestroyed >= 8;
-	}
-	
+	};
 }

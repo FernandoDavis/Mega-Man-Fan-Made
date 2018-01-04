@@ -1,25 +1,18 @@
 package rbadia.voidspace.main;
-import java.awt.Color;
 import java.awt.Graphics2D;
 
-import javax.swing.ImageIcon;
-
-import rbadia.voidspace.graphics.GraphicsManager;
 import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.main.GameStatus;
 import rbadia.voidspace.main.InputHandler;
 import rbadia.voidspace.main.MainFrame;
 import rbadia.voidspace.main.NewLevel2State;
 import rbadia.voidspace.main.NewLevelLogic;
-import rbadia.voidspace.model.Asteroid;
 import rbadia.voidspace.model.Platform;
 import rbadia.voidspace.sounds.SoundManager;
 
 public class Level3State extends NewLevel2State{
 
 	private static final long serialVersionUID = 1L;
-	protected int numPlatforms = 16;
-	
 
 	public Level3State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
 			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
@@ -28,7 +21,6 @@ public class Level3State extends NewLevel2State{
 	}
 
 	protected int numPlatforms=16;
-
 	public int getNumPlatforms() {return numPlatforms;}
 	
 	@Override
@@ -44,12 +36,49 @@ public class Level3State extends NewLevel2State{
 		setStartState(GETTING_READY);
 		setCurrentState(getStartState());
 		newPlatforms(getNumPlatforms());
+	}
 
+	@Override
+	public void updateScreen(){
+		Graphics2D g2d = getGraphics2D();
+		GameStatus status = this.getGameStatus();
+
+		// save original font - for later use
+		if(this.originalFont == null){
+			this.originalFont = g2d.getFont();
+			this.bigFont = originalFont;
+		}
+
+		this.clearScreen();
+		this.drawStars(50);
+		this.drawFloor();
+		this.drawPlatforms();
+		this.drawMegaMan();
+		this.drawAsteroid();
+		this.drawAsteroid2();
+		this.drawBigAsteroid();
+		this.drawBullets();
+		this.drawBigBullets();
+		this.checkBullletAsteroidCollisions();
+		this.checkBullletAsteroidCollisions2();
+		this.checkBullletBigAsteroidCollisions();
+		this.checkBigBulletAsteroidCollisions();
+		this.checkBigBulletBigAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions2();
+		this.checkMegaManBigAsteroidCollisions();
+		this.checkAsteroidFloorCollisions();
+		this.checkAsteroidFloorCollisions2();
+		this.checkBigAsteroidFloorCollisions();
+
+		// update asteroids destroyed (score) label  
+		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
+		// update lives left label
+		getMainFrame().getLivesValueLabel().setText(Integer.toString(status.getLivesLeft()));
+		//update level label
+		getMainFrame().getLevelValueLabel().setText(Long.toString(status.getLevel()));
 	}
 	
-
-
-
 	@Override
 	protected void drawAsteroid() {
 		Graphics2D g2d = getGraphics2D();

@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.ImageIcon;
 import javax.swing.Timer;
 
 import rbadia.voidspace.graphics.GraphicsManager;
@@ -38,8 +37,8 @@ public class NewLevel1State extends Level1State {
 	public static final int NEW_BOSS = 10;
 	protected static final int NEW_BOSS_DELAY = 500;
 	
-	public NewLevel1State(int level, MainFrame frame, GameStatus status, LevelLogic gameLogic,
-			InputHandler inputHandler, GraphicsManager graphicsMan, SoundManager soundMan) {
+	public NewLevel1State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
+			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 		// TODO Auto-generated constructor stub
 	}
@@ -130,35 +129,13 @@ public class NewLevel1State extends Level1State {
 		this.drawPlatforms();
 		this.drawMegaMan();
 		this.drawAsteroid();
-		this.drawAsteroid2();
-		this.drawBigAsteroid();
 		this.drawBullets();
 		this.drawBigBullets();
 		this.checkBullletAsteroidCollisions();
-		this.checkBullletAsteroidCollisions2();
 		this.checkBullletBigAsteroidCollisions();
 		this.checkBigBulletAsteroidCollisions();
-		this.checkBigBulletBigAsteroidCollisions();
 		this.checkMegaManAsteroidCollisions();
-		this.checkMegaManAsteroidCollisions2();
-		this.checkMegaManBigAsteroidCollisions();
 		this.checkAsteroidFloorCollisions();
-		this.checkAsteroidFloorCollisions2();
-		this.checkBigAsteroidFloorCollisions();
-		////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////BOSS///////////////////////////////////
-		////////////////////////////////////////////////////////////////////////
-		this.drawBoss();
-		this.drawBossBullets();
-		this.checkBossAsteroidCollisions();
-		this.checkBossAsteroidCollisions2();
-		this.checkBossBigAsteroidCollisions();
-		this.checkMegaManBulletBossCollisions();
-		this.checkMegaManBigBulletBossCollisions();
-		this.checkBossBulletMegaManCollisions();
-		this.bossLife();
-		
-		
 
 		// update asteroids destroyed (score) label  
 		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
@@ -193,12 +170,10 @@ public class NewLevel1State extends Level1State {
 
 		if((Gravity()==false) && (Fire()==false) && (Fire2()==false) && megaMan.getDirection() != 180){
 			getGraphicsManager().drawMegaMan(megaMan, g2d, this);
-			megaMan.setDirection(0);
 		}
 		
 		else if(((Gravity()==false) && (Fire()==false) && (Fire2()==false)) && megaMan.getDirection() == 180){
 			((NewGraphicsManager) getGraphicsManager()).drawMegaManFlipped(megaMan, g2d, this);
-			megaMan.setDirection(180);
 		}
 	};
 	
@@ -233,71 +208,25 @@ public class NewLevel1State extends Level1State {
 		}
 	};
 	
-	@Override
-	protected boolean Fire(){
-		MegaMan megaMan = this.getMegaMan();
-		List<Bullet> bullets = this.getBullets();
-		for(int i=0; i<bullets.size(); i++){
-			Bullet bullet = bullets.get(i);
-			if((bullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60) && 
-					(bullet.getX() >= megaMan.getX() - 60)){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	@Override
-	protected boolean Fire2(){
-		MegaMan megaMan = this.getMegaMan();
-		List<BigBullet> bigBullets = this.getBigBullets();
-		for(int i=0; i<bigBullets.size(); i++){
-			BigBullet bigBullet = bigBullets.get(i);
-			if((bigBullet.getX() <= megaMan.getX() + megaMan.getWidth() + 60) && 
-					(bigBullet.getX() >= megaMan.getX() - 60)){
-				return true;
-			}
-		}
-		return false;
-	}
-
-	
-	@Override
-	public void fireBullet(){
-		if(megaMan.getDirection()==180) 
-		{
-			Bullet bullet2 = new Bullet (megaMan.x,megaMan.y + megaMan.width/2 - Bullet.HEIGHT+2);
-			bullet2.setDirection(megaMan.getDirection());
-			bullets.add(bullet2);
-		}
-		else {
-		Bullet bullet = new Bullet(megaMan.x + megaMan.width - Bullet.WIDTH/2,
-					   megaMan.y + megaMan.width/2 - Bullet.HEIGHT +2);
-		bullet.setDirection(megaMan.getDirection());
-		bullets.add(bullet);
+	@Override 
+	public void fireBullet(){ 
+		Bullet bullet = new Bullet(megaMan.x + megaMan.width - Bullet.WIDTH/2, 
+		megaMan.y + megaMan.width/2 - Bullet.HEIGHT +2);
+		bullet.setDirection(megaMan.getDirection()); 
+		bullets.add(bullet); 
 		this.getSoundManager().playBulletSound();
-	}
-	}
+	};
 	
-	@Override
-	public void fireBigBullet(){
-		//BigBullet bigBullet = new BigBullet(megaMan);
-		if(megaMan.getDirection()==180) 
-		{
-			BigBullet bigBullet2 = new BigBullet (megaMan.x, megaMan.y + megaMan.width/2 - BigBullet.HEIGHT+2);
-			bigBullet2.setDirection(megaMan.getDirection());
-			bigBullets.add(bigBullet2);
-		}
-		else 
-		{
-			int xPos = megaMan.x + megaMan.width - BigBullet.WIDTH / 2;
-			int yPos = megaMan.y + megaMan.width/2 - BigBullet.HEIGHT + 4;
-			BigBullet  bigBullet = new BigBullet(xPos, yPos);
-			bigBullet.setDirection(megaMan.getDirection());
-			bigBullets.add(bigBullet);
-			this.getSoundManager().playBulletSound();
-		}
-	}
+	@Override 
+	public void fireBigBullet(){ 
+		//BigBullet bigBullet = new BigBullet(megaMan); 
+		int xPos = megaMan.x + megaMan.width - BigBullet.WIDTH / 2; 
+		int yPos = megaMan.y + megaMan.width/2 - BigBullet.HEIGHT + 4; 
+		BigBullet  bigBullet = new BigBullet(xPos, yPos); 
+		bigBullet.setDirection(megaMan.getDirection()); 
+		bigBullets.add(bigBullet); 
+		this.getSoundManager().playBulletSound(); 
+	}; 
 	
 	@Override
 	protected boolean Fire(){
@@ -875,7 +804,6 @@ public class NewLevel1State extends Level1State {
 			boss.translate(boss.getSpeed()/2, 0);
 		}
 	}	
-
 	
 	public void speedUpBoss() {
 		boss.setSpeed(boss.getDefaultSpeed() * 2 +1);

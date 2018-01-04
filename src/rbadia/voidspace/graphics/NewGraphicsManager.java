@@ -1,10 +1,8 @@
-package rbadia.voidspace.graphics
+package rbadia.voidspace.graphics;
 
 import java.awt.Graphics2D;
 
 import java.awt.Rectangle;
-import java.awt.Image;
-
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 
@@ -14,7 +12,6 @@ import javax.swing.JOptionPane;
 
 import rbadia.voidspace.main.MainFrame;
 import rbadia.voidspace.model.Asteroid;
-import rbadia.voidspace.model.BigBullet;
 import rbadia.voidspace.model.Boss;
 import rbadia.voidspace.model.BossBullets;
 import rbadia.voidspace.model.Floor;
@@ -45,9 +42,9 @@ public class NewGraphicsManager extends GraphicsManager {
 	private BufferedImage bossBulletImg;
 	private BufferedImage platformLevel3;
 	private BufferedImage platformLevel4;
-	private ImageIcon  transition;
-	private ImageIcon  transition2;
-	private ImageIcon  transition3;
+	private ImageIcon transition;
+	private ImageIcon transition2;
+	private ImageIcon transition3;
 	private ImageIcon backgroundImageMenu;
 	private ImageIcon backgroundImageLevel1;
 	private ImageIcon backgroundImageLevel2;
@@ -55,7 +52,6 @@ public class NewGraphicsManager extends GraphicsManager {
 	private ImageIcon backgroundImageLevel4;
 	private BufferedImage bossShip;
 	private BufferedImage ship;
-
 
 	public NewGraphicsManager() {
 		super();

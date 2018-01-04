@@ -43,6 +43,62 @@ public class Level4State extends NewLevel2State{
 	}
 	
 	@Override
+	public void updateScreen(){
+		Graphics2D g2d = getGraphics2D();
+		GameStatus status = this.getGameStatus();
+
+		// save original font - for later use
+		if(this.originalFont == null){
+			this.originalFont = g2d.getFont();
+			this.bigFont = originalFont;
+		}
+
+		this.clearScreen();
+		this.drawStars(50);
+		this.drawFloor();
+		this.drawPlatforms();
+		this.drawMegaMan();
+		this.drawAsteroid();
+		this.drawAsteroid2();
+		this.drawBigAsteroid();
+		this.drawBullets();
+		this.drawBigBullets();
+		this.checkBullletAsteroidCollisions();
+		this.checkBullletAsteroidCollisions2();
+		this.checkBullletBigAsteroidCollisions();
+		this.checkBigBulletAsteroidCollisions();
+		this.checkBigBulletBigAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions2();
+		this.checkMegaManBigAsteroidCollisions();
+		this.checkAsteroidFloorCollisions();
+		this.checkAsteroidFloorCollisions2();
+		this.checkBigAsteroidFloorCollisions();
+		////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////BOSS///////////////////////////////////
+		////////////////////////////////////////////////////////////////////////
+		this.drawBoss();
+		this.drawBossBullets();
+		this.checkBossAsteroidCollisions();
+		this.checkBossAsteroidCollisions2();
+		this.checkBossBigAsteroidCollisions();
+		this.checkMegaManBulletBossCollisions();
+		this.checkMegaManBigBulletBossCollisions();
+		this.checkBossBulletMegaManCollisions();
+		this.bossLife();
+		
+		
+
+		// update asteroids destroyed (score) label  
+		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
+		// update lives left label
+		getMainFrame().getLivesValueLabel().setText(Integer.toString(status.getLivesLeft()));
+		//update level label
+		getMainFrame().getLevelValueLabel().setText(Long.toString(status.getLevel()));
+	}
+
+	
+	@Override
 	public void doInitialScreen() {
 		setCurrentState(INITIAL_SCREEN);
 		getGameLogic().drawInitialMessage();
