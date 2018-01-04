@@ -25,6 +25,9 @@ public class NewLevelLogic extends LevelLogic {
 			}
 		}
 		
+		/*
+		 * If E key is pressed, checks if user has enough points to assign power up life one up
+		 */
 		if(ih.isEPressed()) {
 			NewGameStatus status = (NewGameStatus) getLevelState().getGameStatus();
 			score = status.getAsteroidsDestroyed() + ((NewGameStatus) status).getShipsDestroyed();
@@ -53,6 +56,9 @@ public class NewLevelLogic extends LevelLogic {
 			}
 		}
 		
+		/*
+		 * If Q key is pressed, checks if user has enough points to assign BigBullet power up
+		 */
 		if(ih.isQPressed()) {
 			NewGameStatus status = (NewGameStatus) getLevelState().getGameStatus();
 			score = status.getAsteroidsDestroyed() + ((NewGameStatus) status).getShipsDestroyed();

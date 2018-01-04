@@ -13,17 +13,16 @@ import rbadia.voidspace.model.Platform;
 import rbadia.voidspace.model.Ship;
 import rbadia.voidspace.sounds.SoundManager;
 
-public class Level4State extends Level3State {
+public class Level5State extends Level3State {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8738640199070011353L;
 
-	public Level4State(int level, MainFrame frame, NewGameStatus status, NewLevelLogic gameLogic,
+	public Level5State(int level, MainFrame frame, NewGameStatus status, NewLevelLogic gameLogic,
 			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
-		// TODO Auto-generated constructor stub
 	}
 	
 	protected int numPlatforms=16;
@@ -46,12 +45,15 @@ public class Level4State extends Level3State {
 		return bossShip;
 	}
 
+	/*
+	 * If boss health is depleted, all 4 minions are ddead and the number of asteroids destroyed is 18, the level is won
+	 */
 	@Override
 	public boolean isLevelWon() {
 		if(getInputHandler().isNPressed()) {
 			return true;
 		}
-		return counter >= 4 && levelBossShipHits >= 45 && levelAsteroidsDestroyed >= 13;
+		return counter >= 4 && levelBossShipHits >= 45 && levelAsteroidsDestroyed >= 18;
 	};
 	
 	@Override
@@ -59,12 +61,14 @@ public class Level4State extends Level3State {
 		super.doStart();
 		setStartState(GETTING_READY);
 		setCurrentState(getStartState());
+		//for loop to create 4 ship objects.
 		for(int i = 0; i<4; i++) {
 			ships[i] = newShip();
 		}
 		newBossShip();
 		newPlatforms(getNumPlatforms());
 		GameStatus status = this.getGameStatus();
+		//Displays both asteroid score and ship score
 		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed() + ((NewGameStatus) status).getShipsDestroyed()));
 	}
 	
@@ -134,6 +138,9 @@ public class Level4State extends Level3State {
 		return platforms;
 	};
 	
+	/*
+	 * Creates boss ship object
+	 */
 	public Ship newBossShip(){
 		this.bossShip = new Ship((getWidth() - Ship.WIDTH) / 2, (getHeight() - Ship.HEIGHT - Ship.Y_OFFSET) / 2);
 		bossShip.y = (int) (getHeight()/2 - bossShip.getHeight());
@@ -141,6 +148,9 @@ public class Level4State extends Level3State {
 		return bossShip;
 	}
 	
+	/*
+	 * Creates minion ship object
+	 */
 	public Ship newShip(){
 		Ship ship = new Ship((getWidth() - Ship.WIDTH) / 2, (getHeight() - Ship.HEIGHT - Ship.Y_OFFSET) / 2);
 		ship.y = (int) (getHeight() - ship.getHeight());
@@ -148,16 +158,25 @@ public class Level4State extends Level3State {
 		return ship;
 	}
 	
+	/*
+	 * Draws boss ships
+	 */
 	protected void drawNewBossShip() {
 		Graphics2D g2d = getGraphics2D();
 		((NewGraphicsManager) getGraphicsManager()).drawBossShip(bossShip, g2d, this);
 	}
 	
+	/*
+	 * Draws regular minion ships
+	 */
 	protected void drawNewShip(Ship ship) {
 		Graphics2D g2d = getGraphics2D();
 		((NewGraphicsManager) getGraphicsManager()).drawShip(ship, g2d, this);
 	}
 	
+	/*
+	 * Uses a boolean variable to check if going up or down and resets direction accordingly
+	 */
 	protected void moveShipVertically(Ship ship) {
 		if(touchUpperScreen(ship)){
 			shipUp = false;
@@ -177,6 +196,9 @@ public class Level4State extends Level3State {
 		}	
 	}
 	
+	/*
+	 * Verifies if ship object touches the upper screen
+	 */
 	protected boolean touchUpperScreen(Ship ship){
 		if(ship.getY() <= 0) {
 			return true;
@@ -186,6 +208,9 @@ public class Level4State extends Level3State {
 		}
 	}
 	
+	/*
+	 * Verifies if ship object touches bottom screen
+	 */
 	protected boolean touchBottomScreen(Ship ship){
 		if(ship.getY() >= getHeight()-ship.getHeight()) {
 			return true;
@@ -195,6 +220,9 @@ public class Level4State extends Level3State {
 		}
 	}
 	
+	/*
+	 * Checks boss-bullet and minion-bullet collision and removes health from boss/minion according to ammo type
+	 */
 	protected void checkBulletBossShipCollisions(){
 		GameStatus status = getGameStatus();
 		for(int i=0; i<bullets.size(); i++){
@@ -227,7 +255,6 @@ public class Level4State extends Level3State {
 					}	
 					break;
 				}
-				
 			}
 		}
 	}
