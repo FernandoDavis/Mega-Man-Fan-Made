@@ -87,7 +87,7 @@ public class GraphicsManager {
 	
 	public void drawPlatform2 (Platform platform, Graphics2D g2d, ImageObserver observer, int i){
 		g2d.drawImage(platformImg, platform.x , platform.y, observer);	
-}
+	}
 
 	/**
 	 * Draws a bullet image to the specified graphics canvas.
@@ -142,7 +142,4 @@ public class GraphicsManager {
 	public void drawBigAsteroidExplosion(Rectangle bigAsteroidExplosion, Graphics2D g2d, ImageObserver observer) {
 		g2d.drawImage(bigAsteroidExplosionImg, bigAsteroidExplosion.x, bigAsteroidExplosion.y, observer);
 	}
-
-
-
 }

@@ -1,6 +1,10 @@
 package rbadia.voidspace.main;
-
 import java.awt.Graphics2D;
+
+import rbadia.voidspace.graphics.GraphicsManager;
+import rbadia.voidspace.graphics.NewGraphicsManager;
+import rbadia.voidspace.model.Platform;
+
 import java.util.List;
 
 import rbadia.voidspace.graphics.GraphicsManager;
@@ -8,113 +12,123 @@ import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.model.BigBullet;
 import rbadia.voidspace.model.Bullet;
 import rbadia.voidspace.model.MegaMan;
+
 import rbadia.voidspace.sounds.SoundManager;
 
-public class NewLevel2State extends Level2State {
+/**
+ * Level very similar to LevelState1.  
+ * Platforms arranged in triangular form. 
+ * Asteroids travel at 225 degree angle
+ */
+public class NewLevel2State extends NewLevel1State {
+	
+	private static final long serialVersionUID = 2237698689621378249L;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1195331220121706608L;
-
-	public NewLevel2State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
-			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
+	// Constructors
+	public NewLevel2State(int level, MainFrame frame, GameStatus status, 
+			LevelLogic gameLogic, InputHandler inputHandler,
+			GraphicsManager graphicsMan, SoundManager soundMan) {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
-		// TODO Auto-generated constructor stub
+	}
+	
+	protected void TransitionImage() {
+		// Transition
+		Graphics2D g2d = getGraphics2D();	
+		((NewGraphicsManager) getGraphicsManager()).Transition(g2d, getMainFrame(), this);
 	}
 	
 	@Override
+	public void doStart() {	
+		super.doStart();
+		setStartState(GETTING_READY);
+		setCurrentState(getStartState());
+		TransitionImage();
+	}
+	
+	@Override
+	public Platform[] newPlatforms(int n){
+		platforms = new Platform[n];
+		for(int i=0; i<n; i++){
+			this.platforms[i] = new Platform(0,0);
+			if(i<4)	platforms[i].setLocation(50+ i*50, getHeight()/2 + 140 - i*40);
+			if(i==4) platforms[i].setLocation(50 +i*50, getHeight()/2 + 140 - 3*40);
+			if(i>4){	
+				int k=4;
+				platforms[i].setLocation(50 + i*50, getHeight()/2 + 20 + (i-k)*40 );
+				k=k+2;
+			}
+		}
+		return platforms;
+	}
+
+	@Override
+	protected void drawAsteroid2() {
+		Graphics2D g2d = getGraphics2D();
+		GameStatus status = getGameStatus();
+		if((asteroid2.getX() + asteroid2.getPixelsWide() >  0)) {
+			asteroid2.translate(asteroid2.getSpeed(), asteroid2.getSpeed());
+			((NewGraphicsManager)getGraphicsManager()).drawAsteroid2(asteroid2, g2d, this);
+		}
+		else {
+			long currentTime = System.currentTimeMillis();
+			if((currentTime - lastAsteroidTime) > NEW_ASTEROID_DELAY){
+
+				lastAsteroidTime = currentTime;
+				status.setNewAsteroid2(false);
+				asteroid2.setLocation(0, 1+rand.nextInt(this.getHeight() - asteroid2.getPixelsTall() - 32));
+			}
+			else {
+				// draw explosion
+				((NewGraphicsManager) getGraphicsManager()).drawAsteroidExplosion2(asteroidExplosion, g2d, this);
+			}
+		}	
+	}
+	
+	@Override
+	protected void drawBigAsteroid() {
+		Graphics2D g2d = getGraphics2D();
+		GameStatus status = getGameStatus();
+		if(bigAsteroid.getX() + bigAsteroid.getPixelsWide() > 0) {
+			bigAsteroid.translate(0, bigAsteroid.getSpeed());
+			((NewGraphicsManager)getGraphicsManager()).drawBigAsteroid(bigAsteroid, g2d, this);
+		}
+		else {
+			long currentTime = System.currentTimeMillis();
+			if((currentTime - lastAsteroidTime) > NEW_ASTEROID_DELAY){
+
+				//lastAsteroidTime = currentTime;
+				status.setNewBigAsteroid(false);
+				bigAsteroid.setLocation(rand.nextInt(this.getWidth()-bigAsteroid.getPixelsWide()-64), 0);
+			}
+			else {
+				// draw explosion
+				((NewGraphicsManager) getGraphicsManager()).drawBigAsteroidExplosion(asteroidExplosion, g2d, this);
+			}
+		}	
+	}
+	
+	@Override
+	protected void drawFloor() {
+		//draw Floor
+		Graphics2D g2d = getGraphics2D();
+		for(int i=0; i<9; i++){
+		((NewGraphicsManager) getGraphicsManager()).drawFloor2(floor[i], g2d, this, i);
+		}
+	}
+	
+	@Override
+	protected void clearScreen() {
+		// clear screen
+		Graphics2D g2d = getGraphics2D();
+		((NewGraphicsManager) getGraphicsManager()).BackgroundImageLevel2(g2d, getMainFrame(), this);
+	}
+	
+	@Override
+
 	public boolean isLevelWon() {
 		if(getInputHandler().isNPressed()) {
 			return true;
-		}
-		return levelAsteroidsDestroyed >= 3;
-	};
-	
-	@Override
-	protected void drawMegaMan() {
-		//draw one of three possible MegaMan poses according to situation
-		Graphics2D g2d = getGraphics2D();
-		GameStatus status = getGameStatus();
-		if(!status.isNewMegaMan()){
-			if(((Gravity() == true) || ((Gravity() == true) && (Fire() == true || Fire2() == true))) && megaMan.getDirection() != 180){
-				getGraphicsManager().drawMegaFallR(megaMan, g2d, this);
-			}
-			
-			else if(((Gravity() == true) || ((Gravity() == true) && (Fire() == true || Fire2() == true))) && megaMan.getDirection() == 180){
-				((NewGraphicsManager) getGraphicsManager()).drawMegaFallRFlipped(megaMan, g2d, this);
-			}
-		}
 
-		if(((Fire() == true || Fire2()== true) && (Gravity()==false)) && megaMan.getDirection() != 180){
-			getGraphicsManager().drawMegaFireR(megaMan, g2d, this);
-		}
-		
-		else if(((Fire() == true || Fire2()== true) && (Gravity()==false)) && megaMan.getDirection() == 180){
-			((NewGraphicsManager) getGraphicsManager()).drawMegaFireRFlipped(megaMan, g2d, this);
-		}
-
-		if((Gravity()==false) && (Fire()==false) && (Fire2()==false) && megaMan.getDirection() != 180){
-			getGraphicsManager().drawMegaMan(megaMan, g2d, this);
-		}
-		
-		else if(((Gravity()==false) && (Fire()==false) && (Fire2()==false)) && megaMan.getDirection() == 180){
-			((NewGraphicsManager) getGraphicsManager()).drawMegaManFlipped(megaMan, g2d, this);
-		}
-	};
-	
-	@Override
-	public boolean moveBullet(Bullet bullet){
-		if(bullet.getX() + bullet.getSpeed() > 0 && bullet.getDirection() == 180){
-			bullet.translate(-bullet.getSpeed(), 0);
-			return false;
-		}
-		else if(bullet.getX() + bullet.getSpeed() + bullet.getWidth() < getWidth() && bullet.getDirection() == 0){
-			bullet.translate(bullet.getSpeed(), 0);
-			return false;
-		}
-		else{
-			return true;
-		}
-	};
-	
-	@Override
-	public boolean moveBigBullet(BigBullet bigBullet){
-		if(bigBullet.getX() + bigBullet.getSpeed() > 0 && bigBullet.getDirection() == 180){
-			bigBullet.translate(-bigBullet.getSpeed(), 0);
-			return false;
-		}
-		else if(bigBullet.getX() + bigBullet.getSpeed() + bigBullet.getWidth() < getWidth() && bigBullet.getDirection() == 0){
-			bigBullet.translate(bigBullet.getSpeed(), 0);
-			return false;
-		}
-		else{
-			return true;
-		}
-	};
-
-	
-	@Override
-	public void fireBullet(){
-		Bullet bullet = new Bullet(megaMan.x + megaMan.width - Bullet.WIDTH/2,
-				megaMan.y + megaMan.width/2 - Bullet.HEIGHT +2);
-		bullet.setDirection(megaMan.getDirection());
-		bullets.add(bullet);
-		this.getSoundManager().playBulletSound();
-	};
-	
-	@Override
-	public void fireBigBullet(){
-		//BigBullet bigBullet = new BigBullet(megaMan);
-		int xPos = megaMan.x + megaMan.width - BigBullet.WIDTH / 2;
-		int yPos = megaMan.y + megaMan.width/2 - BigBullet.HEIGHT + 4;
-		BigBullet  bigBullet = new BigBullet(xPos, yPos);
-		bigBullet.setDirection(megaMan.getDirection());
-		bigBullets.add(bigBullet);
-		this.getSoundManager().playBulletSound();
-	};
-	
-	@Override
 	protected boolean Fire(){
 		MegaMan megaMan = this.getMegaMan();
 		List<Bullet> bullets = this.getBullets();
@@ -157,14 +171,9 @@ public class NewLevel2State extends Level2State {
 		if(megaMan.getX() - megaMan.getSpeed() >= 0){
 			megaMan.translate(-megaMan.getSpeed(), 0);
 			megaMan.setDirection(180);
+
 		}
-	};
+		return levelAsteroidsDestroyed >= 8;
+	}
 	
-	@Override
-	public void moveMegaManRight(){
-		if(megaMan.getX() + megaMan.getSpeed() + megaMan.width < getWidth()){
-			megaMan.translate(megaMan.getSpeed(), 0);
-			megaMan.setDirection(0);
-		}
-	};
 }
