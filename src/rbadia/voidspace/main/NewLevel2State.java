@@ -1,15 +1,7 @@
 package rbadia.voidspace.main;
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.List;
-
 import rbadia.voidspace.graphics.GraphicsManager;
 import rbadia.voidspace.graphics.NewGraphicsManager;
-import rbadia.voidspace.model.Asteroid;
-import rbadia.voidspace.model.BigBullet;
-import rbadia.voidspace.model.Bullet;
-import rbadia.voidspace.model.MegaMan;
 import rbadia.voidspace.model.Platform;
 import rbadia.voidspace.sounds.SoundManager;
 
@@ -29,11 +21,18 @@ public class NewLevel2State extends NewLevel1State {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 	}
 	
+	protected void TransitionImage() {
+		// Transition
+		Graphics2D g2d = getGraphics2D();	
+		((NewGraphicsManager) getGraphicsManager()).Transition(g2d, getMainFrame(), this);
+	}
+	
 	@Override
 	public void doStart() {	
 		super.doStart();
 		setStartState(GETTING_READY);
 		setCurrentState(getStartState());
+		TransitionImage();
 	}
 	
 	@Override
@@ -97,7 +96,22 @@ public class NewLevel2State extends NewLevel1State {
 			}
 		}	
 	}
-
+	
+	@Override
+	protected void drawFloor() {
+		//draw Floor
+		Graphics2D g2d = getGraphics2D();
+		for(int i=0; i<9; i++){
+		((NewGraphicsManager) getGraphicsManager()).drawFloor2(floor[i], g2d, this, i);
+		}
+	}
+	
+	@Override
+	protected void clearScreen() {
+		// clear screen
+		Graphics2D g2d = getGraphics2D();
+		((NewGraphicsManager) getGraphicsManager()).BackgroundImageLevel2(g2d, getMainFrame(), this);
+	}
 	
 	@Override
 	public boolean isLevelWon() {

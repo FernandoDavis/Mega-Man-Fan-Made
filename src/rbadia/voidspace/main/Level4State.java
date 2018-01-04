@@ -1,4 +1,5 @@
 package rbadia.voidspace.main;
+import java.awt.Color;
 import java.awt.Graphics2D;
 
 import rbadia.voidspace.graphics.GraphicsManager;
@@ -26,6 +27,13 @@ public class Level4State extends NewLevel2State{
 	
 
 	@Override
+	protected void TransitionImage() {
+		// Transition
+		Graphics2D g2d = getGraphics2D();	
+		((NewGraphicsManager) getGraphicsManager()).Transition3(g2d, getMainFrame(), this);
+	} 
+	
+	@Override
 	public void doStart() {	
 		super.doStart();
 		setStartState(GETTING_READY);
@@ -33,6 +41,13 @@ public class Level4State extends NewLevel2State{
 		newPlatforms(getNumPlatforms());
 
 	}
+	
+	@Override
+	public void doInitialScreen() {
+		setCurrentState(INITIAL_SCREEN);
+		getGameLogic().drawInitialMessage();
+		clearScreen();
+	};
 
 	@Override
 	protected void drawAsteroid() {
@@ -60,7 +75,7 @@ public class Level4State extends NewLevel2State{
 		//draw platforms
 		Graphics2D g2d = getGraphics2D();
 		for(int i=0; i<getNumPlatforms(); i++){
-			getGraphicsManager().drawPlatform2(platforms[i], g2d, this, i);
+			((NewGraphicsManager) getGraphicsManager()).drawPlatformLevel4(platforms[i], g2d, this, i);
 		}
 	}
 	
@@ -88,10 +103,27 @@ public class Level4State extends NewLevel2State{
 			}
 
 		}
-		
-		//platforms[8].setLocation(0, getHeight()/2 + 160 - 8*40);
 		return platforms;
 	}
+	
+	@Override
+	protected void drawFloor() {
+		//draw Floor
+		Graphics2D g2d = getGraphics2D();
+		for(int i=0; i<9; i++){
+			((NewGraphicsManager) getGraphicsManager()).drawFloor4(floor[i], g2d, this, i);	
+		}
+	}
+	
+	@Override
+	protected void clearScreen() {
+		// clear screen
+		Graphics2D g2d = getGraphics2D();
+		((NewGraphicsManager) getGraphicsManager()).BackgroundImageLevel4(g2d, getMainFrame(), this);
+	}
+	
+	@Override
+	protected void drawStars(int numberOfStars) {}
 	
 	@Override
 	public boolean isLevelWon() {

@@ -29,15 +29,14 @@ public class NewLevel1State extends Level1State {
 	protected Asteroid asteroid2;
 	protected Asteroid bigAsteroid;
 	protected Boss boss;
+	protected int fireBossBullets = 0;
+	protected boolean bossLeftCorner = false;
 	protected Rectangle bossExplosion;
 	protected List<BossBullets> bossBullets;
 	protected int bossLifes = 25;
 	protected long lastBossLifeTime = 0;
 	public static final int NEW_BOSS = 10;
 	protected static final int NEW_BOSS_DELAY = 500;
-	
-	
-	ImageIcon Img = new ImageIcon(getClass().getResource("/rbadia/voidspace/graphics/BackLevel1.png"));
 	
 	public NewLevel1State(int level, MainFrame frame, GameStatus status, LevelLogic gameLogic,
 			InputHandler inputHandler, GraphicsManager graphicsMan, SoundManager soundMan) {
@@ -90,15 +89,14 @@ public class NewLevel1State extends Level1State {
 	@Override
 	public void doInitialScreen() {
 		setCurrentState(INITIAL_SCREEN);
-		clearScreen2();///////////////////////////////Este pinta el menu
+		BackgroundImageMenu();
 		getGameLogic().drawInitialMessage();
 	};
 	
-	//@Override//////////////////////////////////////////////////Esta pintando el background del level 1
-	protected void clearScreen2() {
-		// clear screen
-		Graphics2D g2d = getGraphics2D();
-		g2d.drawImage(this.Img.getImage(), 0, 0,getWidth(), getHeight(), null);		
+	protected void BackgroundImageMenu() {
+		// BackgroundImageMenu
+		Graphics2D g2d = getGraphics2D();	
+		((NewGraphicsManager) getGraphicsManager()).BacgroundImageMenu(g2d, getMainFrame(), this);
 	}
 	
 	@Override
@@ -126,27 +124,27 @@ public class NewLevel1State extends Level1State {
 			this.bigFont = originalFont;
 		}
 
-		this.clearScreen2();///////////////////////Pintando el background del level 1
+		this.clearScreen();
 		this.drawStars(50);
 		this.drawFloor();
 		this.drawPlatforms();
 		this.drawMegaMan();
-//		this.drawAsteroid();
-//		this.drawAsteroid2();
-//		this.drawBigAsteroid();
+		this.drawAsteroid();
+		this.drawAsteroid2();
+		this.drawBigAsteroid();
 		this.drawBullets();
 		this.drawBigBullets();
-//		this.checkBullletAsteroidCollisions();
-//		this.checkBullletAsteroidCollisions2();
-//		this.checkBullletBigAsteroidCollisions();
-//		this.checkBigBulletAsteroidCollisions();
-//		this.checkBigBulletBigAsteroidCollisions();
-//		this.checkMegaManAsteroidCollisions();
-//		this.checkMegaManAsteroidCollisions2();
-//		this.checkMegaManBigAsteroidCollisions();
-//		this.checkAsteroidFloorCollisions();
-//		this.checkAsteroidFloorCollisions2();
-//		this.checkBigAsteroidFloorCollisions();
+		this.checkBullletAsteroidCollisions();
+		this.checkBullletAsteroidCollisions2();
+		this.checkBullletBigAsteroidCollisions();
+		this.checkBigBulletAsteroidCollisions();
+		this.checkBigBulletBigAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions2();
+		this.checkMegaManBigAsteroidCollisions();
+		this.checkAsteroidFloorCollisions();
+		this.checkAsteroidFloorCollisions2();
+		this.checkBigAsteroidFloorCollisions();
 		////////////////////////////////////////////////////////////////////////
 		/////////////////////////////////BOSS///////////////////////////////////
 		////////////////////////////////////////////////////////////////////////
@@ -465,12 +463,18 @@ public class NewLevel1State extends Level1State {
 	}
 	
 	@Override
+	protected void clearScreen() {
+		// clear screen
+		Graphics2D g2d = getGraphics2D();
+		((NewGraphicsManager) getGraphicsManager()).BackgroundImageLevel1(g2d, getMainFrame(), this);
+	}
+	
+	@Override
 	protected void drawFloor() {
 		//draw Floor
 		Graphics2D g2d = getGraphics2D();
 		for(int i=0; i<9; i++){
-			getGraphicsManager().drawFloor(floor[i], g2d, this, i);	
-		//((NewGraphicsManager) getGraphicsManager()).drawFloor2(floor[i], g2d, this, i);	///////////Opcion para cambiar el floor, recordar cambiar esta basura
+		((NewGraphicsManager) getGraphicsManager()).drawFloor2(floor[i], g2d, this, i);
 		}
 	}
 
@@ -505,32 +509,18 @@ public class NewLevel1State extends Level1State {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////Working in Boss Movements///////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-			//Boss always target Megaman
-			if(megaMan.getX()<=boss.getX() || megaMan.getDirection()<=boss.getDirection()) 
-			{
-				boss.setDirection(180);
-			}
-		   if(megaMan.getDirection()>=boss.getDirection() || megaMan.getX()>=boss.getX())
-			{
-				boss.setDirection(0);
-			}
-			if((boss.getX() + boss.getPixelsWide() >  0)) {
-				moveBossLeft();
-				if(boss.touchLeftScreen(getBoss()) == true) 
-				{
-					boss.setDirection(0);
-				}
-			}
-			
-			
-			if((boss.getY() + boss.getPixelsTall() > getHeight()-boss.getPixelsTall())) {
-				//moveBossRight();
-			if ((Fire() || Fire2() == true) || lastBossLifeTime < 12 ) 
-			{
-				bossFire();			
-				fireBossBullet();
-			}	
-		}
+		   bossTargetMegaman();
+		   moveBoss(getBoss());
+		   Timer timer = new Timer(1000, new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					fireBossBullet();
+				}});
+		   if(lastBossLifeTime < 23) 
+		   {
+			   
+			   timer.start();
+		   }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 			if(((bossGravity() == true) || ((bossGravity() == true) && (bossFire() == true))) && boss.getDirection() == 180){
@@ -558,7 +548,61 @@ public class NewLevel1State extends Level1State {
 			//boss.setDirection(0);
 		}
 	}
+
+	public boolean touchLeftScreen(Boss boss){
+		if(boss.getX() <= Boss.WIDTH){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
 	
+	public boolean touchRightScreen(Boss boss){
+		if(boss.getX() >= getWidth()-Boss.WIDTH-4){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	public void bossTargetMegaman() 
+	{
+		//Boss always target Megaman
+		if(megaMan.getX()<=boss.getX())
+		{
+			boss.setDirection(180);
+		}
+	   if( megaMan.getX()>=boss.getX())
+		{
+			boss.setDirection(0);
+		}
+	}
+	
+	public void moveBoss(Boss boss) 
+	{		
+		if(!touchLeftScreen(getBoss())) 
+		{
+			if(!bossLeftCorner) 
+			{
+				moveBossLeft();
+			}
+			else 
+			{
+				moveBossRight();
+			}
+		}
+		else 
+		{	
+			bossLeftCorner = true;
+			moveBossRight(); 
+		}
+		if(touchRightScreen(getBoss()))
+		{
+			bossLeftCorner = false;
+			moveBossLeft();
+		}
+	}
 	public Boss newBoss(){
 		this.boss = new Boss((getWidth() - Boss.WIDTH), (getHeight() - Boss.HEIGHT - Boss.Y_OFFSET)/2);
 		return boss;
@@ -693,6 +737,7 @@ public class NewLevel1State extends Level1State {
 				bossBullet2.setDirection(boss.getDirection());
 				bossBullets.add(bossBullet2);
 				this.getSoundManager().playBulletSound();
+				fireBossBullets++;
 			}
 			else 
 			{
@@ -702,6 +747,7 @@ public class NewLevel1State extends Level1State {
 				bossBullet.setDirection(boss.getDirection());
 				bossBullets.add(bossBullet);
 				this.getSoundManager().playBulletSound();
+				fireBossBullets++;
 			}
 		}
 	
@@ -710,9 +756,11 @@ public class NewLevel1State extends Level1State {
 		Graphics2D g2d = getGraphics2D();
 		for(int i=0; i<bossBullets.size(); i++){
 			BossBullets bossBullet = bossBullets.get(i);
-			((NewGraphicsManager) getGraphicsManager()).drawBossBullet(bossBullet, g2d, this);
-
-			boolean remove = this.moveBossBullet(bossBullet);
+			if(fireBossBullets <= 3 ) {
+			((NewGraphicsManager) getGraphicsManager()).drawBossBullet(bossBullet, g2d, this);}
+			else {fireBossBullets =0;}
+			
+			boolean remove = moveBossBullet(bossBullet);
 			if(remove){
 				bossBullets.remove(i);
 				i--;
@@ -732,7 +780,7 @@ public class NewLevel1State extends Level1State {
 		else{
 			return true;
 		}
-	};
+	}
 	
 	
 	protected boolean bossGravity(){
@@ -786,7 +834,7 @@ public class NewLevel1State extends Level1State {
 
 	public void moveBossRight(){
 		if(boss.getX() + boss.getSpeed() + boss.width < getWidth()){
-			boss.translate(boss.getSpeed(), 0);
+			boss.translate(boss.getSpeed()/2, 0);
 		}
 	}	
 

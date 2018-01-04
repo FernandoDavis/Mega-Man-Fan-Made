@@ -18,8 +18,6 @@ import rbadia.voidspace.sounds.SoundManager;
 public class Level3State extends NewLevel2State{
 
 	private static final long serialVersionUID = 1L;
-	
-	ImageIcon Img = new ImageIcon(getClass().getResource("/rbadia/voidspace/graphics/LagoView.jpg"));
 	protected int numPlatforms = 16;
 	
 
@@ -31,7 +29,13 @@ public class Level3State extends NewLevel2State{
 	
 	public int getNumPlatforms() {return numPlatforms;}
 	
-
+	@Override
+	protected void TransitionImage() {
+		// Transition
+		Graphics2D g2d = getGraphics2D();	
+		((NewGraphicsManager) getGraphicsManager()).Transition2(g2d, getMainFrame(), this);
+	}
+	
 	@Override
 	public void doStart() {	
 		super.doStart();
@@ -70,7 +74,7 @@ public class Level3State extends NewLevel2State{
 		//draw platforms
 		Graphics2D g2d = getGraphics2D();
 		for(int i=0; i<getNumPlatforms(); i++){
-			getGraphicsManager().drawPlatform2(platforms[i], g2d, this, i);
+			((NewGraphicsManager) getGraphicsManager()).drawPlatformLevel3(platforms[i], g2d, this, i);
 		}
 	}
 
@@ -93,7 +97,16 @@ public class Level3State extends NewLevel2State{
 	protected void clearScreen() {
 		// clear screen
 		Graphics2D g2d = getGraphics2D();
-		g2d.drawImage(this.Img.getImage(), 0, 0,getWidth(), getHeight(), null);		
+		((NewGraphicsManager) getGraphicsManager()).BackgroundImageLevel3(g2d, getMainFrame(), this);
+	}
+	
+	@Override
+	protected void drawFloor() {
+		//draw Floor
+		Graphics2D g2d = getGraphics2D();
+		for(int i=0; i<9; i++){
+		((NewGraphicsManager) getGraphicsManager()).drawFloor3(floor[i], g2d, this, i);
+		}
 	}
 	
 	@Override
