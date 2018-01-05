@@ -33,21 +33,6 @@ public class Level4State extends NewLevel2State{
 	} 
 	
 	@Override
-	public void updateScreen(){
-		super.updateScreen();
-		this.drawBoss();
-		this.drawBossBullets();
-		this.checkBossAsteroidCollisions();
-		this.checkBossAsteroidCollisions2();
-		this.checkBossBigAsteroidCollisions();
-		this.checkMegaManBulletBossCollisions();
-		this.checkMegaManBigBulletBossCollisions();
-		this.checkBossBulletMegaManCollisions();
-		this.bossLife();
-
-	}
-	
-	@Override
 	public void doStart() {	
 		super.doStart();
 		setStartState(GETTING_READY);

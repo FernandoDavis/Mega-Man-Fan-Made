@@ -93,7 +93,8 @@ public class NewLevel1State extends Level1State {
 	};
 	
 	protected void BackgroundImageMenu() {
-		// BackgroundImageMenu		Graphics2D g2d = getGraphics2D();	
+		// BackgroundImageMenu		
+		Graphics2D g2d = getGraphics2D();	
 		((NewGraphicsManager) getGraphicsManager()).BacgroundImageMenu(g2d, getMainFrame(), this);
 	}
 	
