@@ -15,7 +15,6 @@ import rbadia.voidspace.sounds.SoundManager;
 public class Level4State extends NewLevel2State{
 	
 	private static final long serialVersionUID = 386347600800582004L;
-	
 	protected int numPlatforms = 26;
 
 	public Level4State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,

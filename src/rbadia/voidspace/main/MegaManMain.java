@@ -56,7 +56,7 @@ public class MegaManMain {
 			
 			frame.setResizable(false);
 			gameStatus.setAsteroidsDestroyed(0);
-			gameStatus.setLivesLeft(99999999);
+			gameStatus.setLivesLeft(10);
 			LevelState newlevel1State = new NewLevel1State(1, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
 			LevelState newlevel2State = new NewLevel2State(2, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
 			LevelState level3State = new Level3State(3, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
@@ -84,7 +84,6 @@ public class MegaManMain {
 					outcome = "SORRY YOU LOST";
 					break;
 				}
-
 			}
 			playAgain = JOptionPane.showConfirmDialog(null, outcome + " ... Play Again?", "", JOptionPane.YES_NO_OPTION);
 		}
