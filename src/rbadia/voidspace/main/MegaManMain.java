@@ -20,7 +20,6 @@ import rbadia.voidspace.sounds.SoundManager;
  * Main game class. Starts the game.
  */
 public class MegaManMain {
-
 	//Starts playing menu music as soon as the game frame is created
 
 	public static AudioInputStream audioStream;
@@ -54,6 +53,7 @@ public class MegaManMain {
 			
 			frame.setResizable(false);
 			gameStatus.setAsteroidsDestroyed(0);
+
 			gameStatus.setLivesLeft(5);
 			LevelState newlevel1State = new NewLevel1State(1, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);
 			LevelState newlevel2State = new NewLevel2State(2, frame, gameStatus, gameLogic, inputHandler, graphicsMan, soundMan);

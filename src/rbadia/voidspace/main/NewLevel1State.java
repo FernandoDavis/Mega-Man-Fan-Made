@@ -35,6 +35,7 @@ public class NewLevel1State extends Level1State {
 	protected long lastBossLifeTime = 0;
 	public static final int NEW_BOSS = 10;
 	protected static final int NEW_BOSS_DELAY = 500;
+	protected static final int SCREEN_LIMITS = 5;
 	
 	public NewLevel1State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
 			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
@@ -92,8 +93,7 @@ public class NewLevel1State extends Level1State {
 	};
 	
 	protected void BackgroundImageMenu() {
-		// BackgroundImageMenu
-		Graphics2D g2d = getGraphics2D();	
+		// BackgroundImageMenu		Graphics2D g2d = getGraphics2D();	
 		((NewGraphicsManager) getGraphicsManager()).BacgroundImageMenu(g2d, getMainFrame(), this);
 	}
 	
@@ -135,6 +135,7 @@ public class NewLevel1State extends Level1State {
 		this.checkBigBulletAsteroidCollisions();
 		this.checkMegaManAsteroidCollisions();
 		this.checkAsteroidFloorCollisions();
+
 
 		// update asteroids destroyed (score) label  
 		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
@@ -477,15 +478,15 @@ public class NewLevel1State extends Level1State {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 		   bossTargetMegaman();
 		   moveBoss(getBoss());
-		   Timer timer = new Timer(1000, new ActionListener() {
+		   Timer timer = new Timer(5000, new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					fireBossBullet();
 				}});
 		   if(lastBossLifeTime < 23) 
 		   {
-			   
 			   timer.start();
+			   
 		   }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -516,7 +517,7 @@ public class NewLevel1State extends Level1State {
 	}
 
 	public boolean touchLeftScreen(Boss boss){
-		if(boss.getX() <= Boss.WIDTH){
+		if(boss.getX() <= SCREEN_LIMITS){
 			return true;
 		}
 		else{
@@ -525,7 +526,7 @@ public class NewLevel1State extends Level1State {
 	}
 	
 	public boolean touchRightScreen(Boss boss){
-		if(boss.getX() >= getWidth()-Boss.WIDTH-4){
+		if(boss.getX() >= getWidth()-Boss.WIDTH-SCREEN_LIMITS){
 			return true;
 		}
 		else{
@@ -546,7 +547,7 @@ public class NewLevel1State extends Level1State {
 	}
 	
 	public void moveBoss(Boss boss) 
-	{		
+	{	
 		if(!touchLeftScreen(getBoss())) 
 		{
 			if(!bossLeftCorner) 
@@ -568,6 +569,7 @@ public class NewLevel1State extends Level1State {
 			bossLeftCorner = false;
 			moveBossLeft();
 		}
+			 
 	}
 	public Boss newBoss(){
 		this.boss = new Boss((getWidth() - Boss.WIDTH), (getHeight() - Boss.HEIGHT - Boss.Y_OFFSET)/2);
@@ -675,7 +677,7 @@ public class NewLevel1State extends Level1State {
 			BossBullets bossBullet = bossBullets.get(i);
 			if((megaMan.intersects(bossBullet))){
 				//MegaMan Life decrease -2
-				status.setLivesLeft(status.getLivesLeft() - 2);
+				status.setLivesLeft(status.getLivesLeft() - 1);
 				// remove bullet
 				bossBullets.remove(i);
 				break;
@@ -722,9 +724,12 @@ public class NewLevel1State extends Level1State {
 		Graphics2D g2d = getGraphics2D();
 		for(int i=0; i<bossBullets.size(); i++){
 			BossBullets bossBullet = bossBullets.get(i);
-			if(fireBossBullets <= 3 ) {
-			((NewGraphicsManager) getGraphicsManager()).drawBossBullet(bossBullet, g2d, this);}
-			else {fireBossBullets =0;}
+			if(boss.getDirection() == 180 ) {
+			((NewGraphicsManager) getGraphicsManager()).drawBossBulletFlipped(bossBullet, g2d, this);}
+			else 
+			{
+				((NewGraphicsManager) getGraphicsManager()).drawBossBullet(bossBullet, g2d, this);
+			}
 			
 			boolean remove = moveBossBullet(bossBullet);
 			if(remove){

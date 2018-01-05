@@ -159,3 +159,4 @@ public class Level3State extends NewLevel2State{
 		return levelAsteroidsDestroyed >= 13; //+5 asteroids
 	}
 }
+

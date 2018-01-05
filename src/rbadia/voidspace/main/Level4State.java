@@ -25,13 +25,27 @@ public class Level4State extends NewLevel2State{
 	
 	public int getNumPlatforms() {return numPlatforms;}
 	
-
 	@Override
 	protected void TransitionImage() {
 		// Transition
 		Graphics2D g2d = getGraphics2D();	
 		((NewGraphicsManager) getGraphicsManager()).Transition3(g2d, getMainFrame(), this);
 	} 
+	
+	@Override
+	public void updateScreen(){
+		super.updateScreen();
+		this.drawBoss();
+		this.drawBossBullets();
+		this.checkBossAsteroidCollisions();
+		this.checkBossAsteroidCollisions2();
+		this.checkBossBigAsteroidCollisions();
+		this.checkMegaManBulletBossCollisions();
+		this.checkMegaManBigBulletBossCollisions();
+		this.checkBossBulletMegaManCollisions();
+		this.bossLife();
+
+	}
 	
 	@Override
 	public void doStart() {	
