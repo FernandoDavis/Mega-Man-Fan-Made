@@ -1,17 +1,11 @@
 package rbadia.voidspace.main;
-import java.awt.Color;
 import java.awt.Graphics2D;
-
-import javax.swing.ImageIcon;
-
-import rbadia.voidspace.graphics.GraphicsManager;
 import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.main.GameStatus;
 import rbadia.voidspace.main.InputHandler;
 import rbadia.voidspace.main.MainFrame;
 import rbadia.voidspace.main.NewLevel2State;
 import rbadia.voidspace.main.NewLevelLogic;
-import rbadia.voidspace.model.Asteroid;
 import rbadia.voidspace.model.Platform;
 import rbadia.voidspace.sounds.SoundManager;
 

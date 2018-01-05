@@ -37,6 +37,7 @@ public class NewGraphicsManager extends GraphicsManager {
 	private BufferedImage bossFireRImgFlipped;
 	private BufferedImage bossExplosionImg;
 	private BufferedImage bossBulletImg;
+	private BufferedImage bossBulletImgFlipped;
 	private BufferedImage platformLevel3;
 	private BufferedImage platformLevel4;
 	private ImageIcon  transition;
@@ -72,15 +73,15 @@ public class NewGraphicsManager extends GraphicsManager {
 			this.backgroundImageLevel3 = new ImageIcon(getClass().getResource("/rbadia/voidspace/graphics/BackgroundLV3.gif"));
 			this.backgroundImageLevel4 = new ImageIcon(getClass().getResource("/rbadia/voidspace/graphics/Volcano.gif"));
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////			
-			this.bossImgFlipped = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/megaMan3Flipped.png"));
-			this.bossFallRImgFlipped = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/megaFallRightFlipped.png"));
-			this.bossFireRImgFlipped = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/megaFireRightFlipped.png"));
-			this.bossImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/megaMan3.png"));
-			this.bossFallRImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/megaFallRight.png"));
-			this.bossFireRImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/megaFireRight.png"));
+			this.bossImgFlipped = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/LeftNormalBoss.png"));
+			this.bossFallRImgFlipped = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/LeftFallingBoss.png"));
+			this.bossFireRImgFlipped = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/LeftShootingBoss.png"));
+			this.bossImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/RightNormalBoss.png"));
+			this.bossFallRImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/RightFallingBoss.png"));
+			this.bossFireRImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/RightShootingBoss.png"));
 			this.bossExplosionImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/bigAsteroidExplosion.png"));
-			this.bossBulletImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/bigBullet.png"));
-
+			this.bossBulletImg = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/RightBossBullets.png"));
+			this.bossBulletImgFlipped = ImageIO.read(getClass().getResource("/rbadia/voidspace/graphics/LeftBossBullets.png"));
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "The graphic files are either corrupt or missing.",
 					"VoidSpace - Fatal Error", JOptionPane.ERROR_MESSAGE);
@@ -194,6 +195,10 @@ public class NewGraphicsManager extends GraphicsManager {
 	
 	public void drawBossBullet(BossBullets bossBullet, Graphics2D g2d, ImageObserver observer) {
 		g2d.drawImage(bossBulletImg, bossBullet.x, bossBullet.y, observer);
+	}
+	
+	public void drawBossBulletFlipped(BossBullets bossBullet, Graphics2D g2d, ImageObserver observer) {
+		g2d.drawImage(bossBulletImgFlipped, bossBullet.x, bossBullet.y, observer);
 	}
 	
 	public void drawBossExplosion(Rectangle bossExplosion, Graphics2D g2d, ImageObserver observer) {

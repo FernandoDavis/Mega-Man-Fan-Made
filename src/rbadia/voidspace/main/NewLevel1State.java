@@ -709,7 +709,7 @@ public class NewLevel1State extends Level1State {
 			BossBullets bossBullet = bossBullets.get(i);
 			if((megaMan.intersects(bossBullet))){
 				//MegaMan Life decrease -2
-				status.setLivesLeft(status.getLivesLeft() - 2);
+				status.setLivesLeft(status.getLivesLeft() - 1);
 				// remove bullet
 				bossBullets.remove(i);
 				break;
@@ -756,9 +756,12 @@ public class NewLevel1State extends Level1State {
 		Graphics2D g2d = getGraphics2D();
 		for(int i=0; i<bossBullets.size(); i++){
 			BossBullets bossBullet = bossBullets.get(i);
-			if(fireBossBullets <= 3 ) {
-			((NewGraphicsManager) getGraphicsManager()).drawBossBullet(bossBullet, g2d, this);}
-			else {fireBossBullets =0;}
+			if(boss.getDirection() == 180 ) {
+			((NewGraphicsManager) getGraphicsManager()).drawBossBulletFlipped(bossBullet, g2d, this);}
+			else 
+			{
+				((NewGraphicsManager) getGraphicsManager()).drawBossBullet(bossBullet, g2d, this);
+			}
 			
 			boolean remove = moveBossBullet(bossBullet);
 			if(remove){
