@@ -1,5 +1,6 @@
 package rbadia.voidspace.main;
 import java.awt.Graphics2D;
+
 import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.main.GameStatus;
 import rbadia.voidspace.main.InputHandler;
@@ -12,15 +13,14 @@ import rbadia.voidspace.sounds.SoundManager;
 public class Level3State extends NewLevel2State{
 
 	private static final long serialVersionUID = 1L;
-	protected int numPlatforms = 16;
-	
 
 	public Level3State(int level, MainFrame frame, GameStatus status, NewLevelLogic gameLogic,
 			InputHandler inputHandler, NewGraphicsManager graphicsMan, SoundManager soundMan) {
 		super(level, frame, status, gameLogic, inputHandler, graphicsMan, soundMan);
 		// TODO Auto-generated constructor stub
 	}
-	
+
+	protected int numPlatforms=16;
 	public int getNumPlatforms() {return numPlatforms;}
 	
 	@Override
@@ -37,6 +37,47 @@ public class Level3State extends NewLevel2State{
 		setCurrentState(getStartState());
 		newPlatforms(getNumPlatforms());
 	}
+
+	@Override
+	public void updateScreen(){
+		Graphics2D g2d = getGraphics2D();
+		GameStatus status = this.getGameStatus();
+
+		// save original font - for later use
+		if(this.originalFont == null){
+			this.originalFont = g2d.getFont();
+			this.bigFont = originalFont;
+		}
+
+		this.clearScreen();
+		this.drawStars(50);
+		this.drawFloor();
+		this.drawPlatforms();
+		this.drawMegaMan();
+		this.drawAsteroid();
+		this.drawAsteroid2();
+		this.drawBigAsteroid();
+		this.drawBullets();
+		this.drawBigBullets();
+		this.checkBullletAsteroidCollisions();
+		this.checkBullletAsteroidCollisions2();
+		this.checkBullletBigAsteroidCollisions();
+		this.checkBigBulletAsteroidCollisions();
+		this.checkBigBulletBigAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions();
+		this.checkMegaManAsteroidCollisions2();
+		this.checkMegaManBigAsteroidCollisions();
+		this.checkAsteroidFloorCollisions();
+		this.checkAsteroidFloorCollisions2();
+		this.checkBigAsteroidFloorCollisions();
+
+		// update asteroids destroyed (score) label  
+		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
+		// update lives left label
+		getMainFrame().getLivesValueLabel().setText(Integer.toString(status.getLivesLeft()));
+		//update level label
+		getMainFrame().getLevelValueLabel().setText(Long.toString(status.getLevel()));
+	}
 	
 	@Override
 	protected void drawAsteroid() {
@@ -49,11 +90,15 @@ public class Level3State extends NewLevel2State{
 		else {
 			long currentTime = System.currentTimeMillis();
 			if((currentTime - lastAsteroidTime) > NEW_ASTEROID_DELAY){
+
 				// draw a new asteroid
 				lastAsteroidTime = currentTime;
 				status.setNewAsteroid(false);
 				asteroid.setLocation((int) (this.getWidth() - asteroid.getPixelsWide()),
 						(rand.nextInt((int) (this.getHeight() - asteroid.getPixelsTall() - 32))));
+
+				asteroid.setLocation(this.getWidth() - asteroid.getPixelsWide(),
+						rand.nextInt(this.getHeight() - asteroid.getPixelsTall() - 32));
 			}
 
 			else{
@@ -114,3 +159,4 @@ public class Level3State extends NewLevel2State{
 		return levelAsteroidsDestroyed >= 13; //+5 asteroids
 	}
 }
+
