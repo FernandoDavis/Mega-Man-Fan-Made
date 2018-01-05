@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Timer;
 
-import rbadia.voidspace.graphics.GraphicsManager;
 import rbadia.voidspace.graphics.NewGraphicsManager;
 import rbadia.voidspace.model.Asteroid;
 import rbadia.voidspace.model.BigBullet;
