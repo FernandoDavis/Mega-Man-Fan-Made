@@ -37,6 +37,7 @@ public class NewLevel1State extends Level1State {
 	protected long lastBossLifeTime = 0;
 	public static final int NEW_BOSS = 10;
 	protected static final int NEW_BOSS_DELAY = 500;
+	protected static final int SCREEN_LIMITS = 5;
 	
 	public NewLevel1State(int level, MainFrame frame, GameStatus status, LevelLogic gameLogic,
 			InputHandler inputHandler, GraphicsManager graphicsMan, SoundManager soundMan) {
@@ -145,21 +146,7 @@ public class NewLevel1State extends Level1State {
 		this.checkAsteroidFloorCollisions();
 		this.checkAsteroidFloorCollisions2();
 		this.checkBigAsteroidFloorCollisions();
-		////////////////////////////////////////////////////////////////////////
-		/////////////////////////////////BOSS///////////////////////////////////
-		////////////////////////////////////////////////////////////////////////
-		this.drawBoss();
-		this.drawBossBullets();
-		this.checkBossAsteroidCollisions();
-		this.checkBossAsteroidCollisions2();
-		this.checkBossBigAsteroidCollisions();
-		this.checkMegaManBulletBossCollisions();
-		this.checkMegaManBigBulletBossCollisions();
-		this.checkBossBulletMegaManCollisions();
-		this.bossLife();
 		
-		
-
 		// update asteroids destroyed (score) label  
 		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
 		// update lives left label
@@ -511,15 +498,15 @@ public class NewLevel1State extends Level1State {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 		   bossTargetMegaman();
 		   moveBoss(getBoss());
-		   Timer timer = new Timer(1000, new ActionListener() {
+		   Timer timer = new Timer(5000, new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					fireBossBullet();
 				}});
 		   if(lastBossLifeTime < 23) 
 		   {
-			   
 			   timer.start();
+			   
 		   }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -550,7 +537,7 @@ public class NewLevel1State extends Level1State {
 	}
 
 	public boolean touchLeftScreen(Boss boss){
-		if(boss.getX() <= Boss.WIDTH){
+		if(boss.getX() <= SCREEN_LIMITS){
 			return true;
 		}
 		else{
@@ -559,7 +546,7 @@ public class NewLevel1State extends Level1State {
 	}
 	
 	public boolean touchRightScreen(Boss boss){
-		if(boss.getX() >= getWidth()-Boss.WIDTH-4){
+		if(boss.getX() >= getWidth()-Boss.WIDTH-SCREEN_LIMITS){
 			return true;
 		}
 		else{
@@ -580,7 +567,7 @@ public class NewLevel1State extends Level1State {
 	}
 	
 	public void moveBoss(Boss boss) 
-	{		
+	{	
 		if(!touchLeftScreen(getBoss())) 
 		{
 			if(!bossLeftCorner) 
@@ -602,6 +589,7 @@ public class NewLevel1State extends Level1State {
 			bossLeftCorner = false;
 			moveBossLeft();
 		}
+			 
 	}
 	public Boss newBoss(){
 		this.boss = new Boss((getWidth() - Boss.WIDTH), (getHeight() - Boss.HEIGHT - Boss.Y_OFFSET)/2);
