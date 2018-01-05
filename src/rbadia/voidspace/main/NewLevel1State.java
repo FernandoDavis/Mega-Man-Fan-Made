@@ -33,8 +33,8 @@ public class NewLevel1State extends Level1State {
 	protected boolean bossLeftCorner = false;
 	protected Rectangle bossExplosion;
 	protected List<BossBullets> bossBullets;
-	protected int bossLifes = 25;
-	protected long lastBossLifeTime = 0;
+	protected int bossLifes = 50;
+	protected int lastBossLifeTime = 0;
 	public static final int NEW_BOSS = 10;
 	protected static final int NEW_BOSS_DELAY = 500;
 	protected static final int SCREEN_LIMITS = 5;
@@ -146,7 +146,7 @@ public class NewLevel1State extends Level1State {
 		this.checkAsteroidFloorCollisions();
 		this.checkAsteroidFloorCollisions2();
 		this.checkBigAsteroidFloorCollisions();
-		
+	
 		// update asteroids destroyed (score) label  
 		getMainFrame().getDestroyedValueLabel().setText(Long.toString(status.getAsteroidsDestroyed()));
 		// update lives left label
@@ -498,16 +498,35 @@ public class NewLevel1State extends Level1State {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 		   bossTargetMegaman();
 		   moveBoss(getBoss());
-		   Timer timer = new Timer(5000, new ActionListener() {
+		   Timer timer = new Timer(NEW_BOSS_DELAY, new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					fireBossBullet();
 				}});
-		   if(lastBossLifeTime < 23) 
+		   while(getLastBossLifeTime() < getBossLife()/2) {
+		   if(!touchLeftScreen(getBoss()) && touchRightScreen(getBoss())) 
 		   {
 			   timer.start();
-			   
 		   }
+		   else 
+		   {
+			   timer.stop();
+		   }
+		   break;
+		   }
+		   if(getLastBossLifeTime() > getBossLife()/2 ) 
+		   {
+			   fireBossBullet();
+		   }
+		   if((Gravity() && Fall()) || Gravity())
+		   {
+			   moveBossUp();
+		   }
+		   
+//		   else if(((!Fire() || !Fire2()) && (Gravity() || Fall())) || (Fire() || Fire2()) && (!Gravity() || !Fall())) 
+//		   {
+//			   moveBossDown();
+//		   }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 			if(((bossGravity() == true) || ((bossGravity() == true) && (bossFire() == true))) && boss.getDirection() == 180){
@@ -617,6 +636,10 @@ public class NewLevel1State extends Level1State {
 	public void setBossLife(int newLifes) 	{ this.bossLifes = newLifes; }
 	
 	public int getBossLife() { return this.bossLifes; }
+	
+	public void setLastBossLifeTime(int lastBossLifeTimes) 	{ this.lastBossLifeTime = lastBossLifeTimes; }
+	
+	public int getLastBossLifeTime() { return this.lastBossLifeTime; }
 	
 	public Boss getBoss() { return boss; }
 	

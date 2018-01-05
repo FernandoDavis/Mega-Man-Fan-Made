@@ -35,15 +35,17 @@ public class Level4State extends NewLevel2State{
 	@Override
 	public void updateScreen(){
 		super.updateScreen();
-		this.drawBoss();
-		this.drawBossBullets();
-		this.checkBossAsteroidCollisions();
-		this.checkBossAsteroidCollisions2();
-		this.checkBossBigAsteroidCollisions();
-		this.checkMegaManBulletBossCollisions();
-		this.checkMegaManBigBulletBossCollisions();
-		this.checkBossBulletMegaManCollisions();
-		this.bossLife();
+		if(levelAsteroidsDestroyed >= 18) {
+			this.drawBoss();
+			this.drawBossBullets();
+			this.checkBossAsteroidCollisions();
+			this.checkBossAsteroidCollisions2();
+			this.checkBossBigAsteroidCollisions();
+			this.checkMegaManBulletBossCollisions();
+			this.checkMegaManBigBulletBossCollisions();
+			this.checkBossBulletMegaManCollisions();
+			this.bossLife();
+		}
 
 	}
 	
@@ -144,6 +146,6 @@ public class Level4State extends NewLevel2State{
 		if(getInputHandler().isNPressed()) {
 			return true;
 		}
-		return levelAsteroidsDestroyed >= 18; //+5 asteroids
+		return this.getBossLife()<=0; //+5 asteroids
 	}
 }
